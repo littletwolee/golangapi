@@ -40,3 +40,14 @@ func GetOne(collectionname string, objectId string) interface{}{
 	}
 	return result
 }
+func GetAll(collectionname string) interface{}{
+	session := Session()
+	db := session.DB(dbname)
+	collection := db.C(collectionname)
+	result := models.User{}
+	err := collection.Find(nil).All(&result)
+	if err != nil {
+		log.Println(err)
+	}
+	return result
+}

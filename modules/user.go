@@ -1,7 +1,7 @@
 package modules
 
 import(
-//	"mongoapi/models"
+	"mongoapi/models"
 	"mongoapi/tools"
 )
 
@@ -10,6 +10,6 @@ var(
 	
 )
 
-func GetOne(ObjectId string) interface{}{
-	return tools.GetOne(collectionname, ObjectId)	
+func GetOne(ObjectId string) models.User{
+	return tools.GetOne(collectionname, ObjectId).(models.User)
 }
