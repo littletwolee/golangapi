@@ -4,8 +4,6 @@ import(
 	"github.com/astaxie/beego"
 	"gopkg.in/mgo.v2"
         "gopkg.in/mgo.v2/bson"
-	"mongoapi/models"
-//	"fmt"
 	"log"
 )
 
@@ -29,23 +27,13 @@ func Session() *mgo.Session {
     return session.Clone()
 }
 
-func GetOne(collectionname string, objectId string) interface{}{
+func GetOne(collectionname string, objectId string) []byte{
 	session := Session()
 	db := session.DB(dbname)
 	collection := db.C(collectionname)
-	result := models.User{}
-	err := collection.Find(bson.M{"_id": bson.ObjectIdHex(objectId)}).One(&result)
-	if err != nil {
-		log.Println(err)
-	}
-	return result
-}
-func GetAll(collectionname string) interface{}{
-	session := Session()
-	db := session.DB(dbname)
-	collection := db.C(collectionname)
-	result := models.User{}
-	err := collection.Find(nil).All(&result)
+	data := bson.M{}
+	err := collection.Find(bson.M{"_id": bson.ObjectIdHex(objectId)}).One(&data)
+	result, err := bson.Marshal(data)
 	if err != nil {
 		log.Println(err)
 	}

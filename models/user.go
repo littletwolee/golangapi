@@ -10,3 +10,6 @@ type User struct {
 	Pwd string
 }
 
+func (this User)New() User{
+	return User{}
+}
