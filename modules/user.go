@@ -12,8 +12,21 @@ var(
 	
 )
 
-func GetOne(ObjectId string) models.User{
+func GetOne(ObjectId string) (user models.User, err error){
 	result := models.User{}
-	bson.Unmarshal(tools.GetOne(collectionname, ObjectId), &result)
+	data, err := tools.GetOne(collectionname, ObjectId)
+	if err != nil {
+		return models.User{}, err
+	}
+	err = bson.Unmarshal(data, &result)
+	if err != nil {
+		return models.User{}, err
+	}
+	return result, nil
+}
+
+func GetAll() map[string]models.User{
+	result := map[string]models.User{}
+	bson.Unmarshal(tools.GetAll(collectionname), &result)
 	return result
 }

@@ -27,12 +27,30 @@ func Session() *mgo.Session {
     return session.Clone()
 }
 
-func GetOne(collectionname string, objectId string) []byte{
+func GetOne(collectionname string, objectId string) (result []byte, err error){
 	session := Session()
 	db := session.DB(dbname)
 	collection := db.C(collectionname)
 	data := bson.M{}
-	err := collection.Find(bson.M{"_id": bson.ObjectIdHex(objectId)}).One(&data)
+	err = collection.Find(bson.M{"_id": bson.ObjectIdHex(objectId)}).One(&data)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	result, err = bson.Marshal(data)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return result, nil
+}
+
+func GetAll(collectionname string) []byte{
+	session := Session()
+	db := session.DB(dbname)
+	collection := db.C(collectionname)
+	data := bson.M{}
+	err := collection.Find(nil).All(&data)
 	result, err := bson.Marshal(data)
 	if err != nil {
 		log.Println(err)

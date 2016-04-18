@@ -21,14 +21,12 @@ type UserController struct {
 func (o *UserController) GetOne() {
 	objectId := o.GetString("objectId")
 	if objectId != "" {
-		ob := modules.GetOne(objectId)
-/*		if err != nil {
+		ob, err := modules.GetOne(objectId)
+		if err != nil {
 			o.Data["json"] = err.Error()
 		} else {
 			o.Data["json"] = ob
-		}*/
-		o.Data["json"] = ob
+		}
 	}
-	
 	o.ServeJSON()
 }
