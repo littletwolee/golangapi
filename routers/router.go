@@ -15,7 +15,8 @@ import (
 
 func init() {
 	user := beego.NewNamespace("/user",
-		beego.NSRouter("/list", &controllers.UserController{},"get:GetOne"),
+		beego.NSRouter("/", &controllers.UserController{},"get:GetOne"),
+		beego.NSRouter("/list", &controllers.UserController{},"get:GetAll"),
 		
 	)
 	beego.AddNamespace(user)

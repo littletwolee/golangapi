@@ -14,7 +14,7 @@ type UserController struct {
 
 // @Title GetOne
 // @Description find user by objectid
-// @Param	objectId		path 	string	true		"the objectid you want to get"
+// @Param	objectId	"the objectid you want to get"
 // @Success 200 {user} models.User
 // @Failure 403 :objectId is empty
 // @router /:objectId [get]
@@ -28,5 +28,21 @@ func (o *UserController) GetOne() {
 			o.Data["json"] = ob
 		}
 	}
+	o.ServeJSON()
+}
+
+// @Title GetAll
+// @Description find user by objectid
+// @Param   objectId  "the objectid you want to get"
+// @Success 200 {user} models.User
+// @Failure 403 :objectId is empty
+// @router /:objectId [get]
+func (o *UserController) GetAll() {
+	ob, err := modules.GetAll()
+		if err != nil {
+			o.Data["json"] = err.Error()
+		} else {
+			o.Data["json"] = ob
+		}
 	o.ServeJSON()
 }

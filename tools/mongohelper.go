@@ -5,6 +5,7 @@ import(
 	"gopkg.in/mgo.v2"
         "gopkg.in/mgo.v2/bson"
 	"log"
+//	"mongoapi/models"
 )
 
 var (
@@ -45,15 +46,23 @@ func GetOne(collectionname string, objectId string) (result []byte, err error){
 	return result, nil
 }
 
-func GetAll(collectionname string) []byte{
+func GetAll(collectionname string) (result [][]byte, err error){
 	session := Session()
 	db := session.DB(dbname)
 	collection := db.C(collectionname)
-	data := bson.M{}
-	err := collection.Find(nil).All(&data)
-	result, err := bson.Marshal(data)
+	data := []bson.M{}
+	err = collection.Find(nil).All(&data)
 	if err != nil {
 		log.Println(err)
+		return nil, err
 	}
-	return result
+	for _, item := range data {
+		itembyte, err := bson.Marshal(item)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		result = append(result, itembyte)
+	}
+	return result, nil
 }
