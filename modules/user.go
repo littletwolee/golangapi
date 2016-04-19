@@ -12,9 +12,22 @@ var(
 	
 )
 
-func GetOne(ObjectId string) (user models.User, err error){
+func GetOneById(ObjectId string) (user models.User, err error){
 	result := models.User{}
-	data, err := tools.GetOne(collectionname, ObjectId)
+	data, err := tools.GetOneById(collectionname, ObjectId)
+	if err != nil {
+		return models.User{}, err
+	}
+	err = bson.Unmarshal(data, &result)
+	if err != nil {
+		return models.User{}, err
+	}
+	return result, nil
+}
+
+func GetOneByFilter(filters map[string]string) (user models.User, err error){
+	result := models.User{}
+	data, err := tools.GetOneByFilter(collectionname, filters)
 	if err != nil {
 		return models.User{}, err
 	}
