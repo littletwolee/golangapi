@@ -26,8 +26,11 @@ Follow Beego. I'm just add modules for business logic layer. Package Models is o
 * My design: request --> controllers --> modules  --> models
 
 ##Usage
-
-1. cd YOUR_CODE_PWD
-2. export GOPATH=$pwd #Set this path of your gopath\<br>  
+`
+1. cd YOUR_CODE_PWD</br>
+`
+`
+2. export GOPATH=$pwd #Set this path of your gopath
+`
 3. go get github.com/astaxie/beego \<br>  
 4. go get gopkg.in/mgo.v2\<br>  
