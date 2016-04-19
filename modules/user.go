@@ -14,39 +14,23 @@ var(
 
 type User struct{}
 
-func (u *User)GetOneById(ObjectId string) (user models.User, err error){
+func (u *User) GetOneUserById (ObjectId string) (user models.User, err error){
 	result := models.User{}
 	data, err := (&tools.MongoHelper{}).GetOneById(collectionname, ObjectId)
-	if err != nil {
-		return models.User{}, err
-	}
 	err = bson.Unmarshal(data, &result)
-	if err != nil {
-		return models.User{}, err
-	}
-	return result, nil
+	return result, err
 }
 
-func (u *User)GetOneByFilter(filters map[string]string) (user models.User, err error){
+func (u *User) GetOneUserByFilter (filters map[string]string) (user models.User, err error){
 	result := models.User{}
 	data, err := (&tools.MongoHelper{}).GetOneByFilter(collectionname, filters)
-	if err != nil {
-		return models.User{}, err
-	}
 	err = bson.Unmarshal(data, &result)
-	if err != nil {
-		return models.User{}, err
-	}
-	return result, nil
+	return result, err
 }
 
-func (u *User)GetAll() (users []models.User,err error){
+func (u *User) GetAllUsers () (users []models.User,err error){
 	result := []models.User{}
 	data, err := (&tools.MongoHelper{}).GetAll(collectionname)
-	if err != nil {
-		log.Panicln(err)
-		return result, err
-	}
 	for _, item := range data {
 		resultitem := models.User{}
 		err = bson.Unmarshal(item, &resultitem)
@@ -56,14 +40,13 @@ func (u *User)GetAll() (users []models.User,err error){
 		}
 		result = append(result, resultitem)
 	} 
-	return result, nil
+	return result, err
 }
 
-func (u *User)Create(user models.User) (objectId string ,err error) {
-	objectId, err = (&tools.MongoHelper{}).Create(collectionname, user)
-	if err != nil {
-		log.Panicln(err)
-		return "", err
-	}
-	return objectId, nil
+func (u *User) CreateUser (user models.User) (objectId string ,err error) {
+	return (&tools.MongoHelper{}).Create(collectionname, user)
+}
+
+func (u *User) DeleteUser (objectId string) error {
+	return (&tools.MongoHelper{}).DeleteDoc(collectionname, objectId)
 }

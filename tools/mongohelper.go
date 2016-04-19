@@ -5,6 +5,7 @@ import(
 	"gopkg.in/mgo.v2"
         "gopkg.in/mgo.v2/bson"
 	"log"
+	"errors"
 	"time"
 //	"mongoapi/models"
 )
@@ -30,11 +31,16 @@ func Session() *mgo.Session {
     return session.Clone()
 }
 
-func (m *MongoHelper)GetOneById(collectionname string, objectId string) (result []byte, err error){
+func (m *MongoHelper) GetOneById (collectionname string, objectId string) (result []byte, err error){
 	session := Session()
 	db := session.DB(dbname)
 	collection := db.C(collectionname)
 	data := bson.M{}
+	if ! bson.IsObjectIdHex(objectId) {
+		err = errors.New("It is not a objectId")
+		log.Println(err)
+		return nil, err
+	}
 	err = collection.Find(bson.M{"_id": bson.ObjectIdHex(objectId)}).One(&data)
 	if err != nil {
 		log.Println(err)
@@ -48,7 +54,7 @@ func (m *MongoHelper)GetOneById(collectionname string, objectId string) (result 
 	return result, nil
 }
 
-func (m *MongoHelper)GetOneByFilter(collectionname string, filters map[string]string) (result []byte, err error){
+func (m *MongoHelper) GetOneByFilter (collectionname string, filters map[string]string) (result []byte, err error){
 	session := Session()
 	db := session.DB(dbname)
 	collection := db.C(collectionname)
@@ -76,7 +82,7 @@ func (m *MongoHelper)GetOneByFilter(collectionname string, filters map[string]st
 	return result, nil
 }
 
-func (m *MongoHelper)GetAll(collectionname string) (result [][]byte, err error){
+func (m *MongoHelper) GetAll (collectionname string) (result [][]byte, err error){
 	session := Session()
 	db := session.DB(dbname)
 	collection := db.C(collectionname)
@@ -97,7 +103,7 @@ func (m *MongoHelper)GetAll(collectionname string) (result [][]byte, err error){
 	return result, nil
 }
 
-func (m *MongoHelper)Create(collectionname string, object interface{}) (objectId string ,err error) {
+func (m *MongoHelper) Create (collectionname string, object interface{}) (objectId string ,err error) {
 	session := Session()
 	db := session.DB(dbname)
 	collection := db.C(collectionname)
@@ -122,4 +128,21 @@ func (m *MongoHelper)Create(collectionname string, object interface{}) (objectId
 		return "", err
 	}
 	return newid.String(), nil
+}
+
+func (m *MongoHelper) DeleteDoc (collectionname string, objectId string) error {	
+	session := Session()
+	db := session.DB(dbname)
+	collection := db.C(collectionname)
+	if ! bson.IsObjectIdHex(objectId) {
+		err := errors.New("It is not a objectId")
+		log.Println(err)
+		return err
+	}
+	err := collection.Remove(bson.M{"_id":bson.ObjectIdHex(objectId)})
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
 }
