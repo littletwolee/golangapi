@@ -1,4 +1,4 @@
-# A Restful Api Server for mongodb by golang Language
+# A Restful Api Server For MongoDB By Golang Language
 
 ##Summary
 At first, I'm only want to have a ejabberd+riak IM server. So I set up it on my vps.
