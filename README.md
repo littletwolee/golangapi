@@ -22,8 +22,8 @@ And next, I want to modify some models of ejabberd. Like user info, relationship
 
 Follow Beego. I'm just add modules for business logic layer. Package Models is only for DB models. And I'm writing package tools.Have some tools classes in it. Of course, You can use any one of them alone.In mongohelpes, there have show one, show all, inster, pull, push, update & delete. It only deals with the interface or map type. So you can deals object & json in package modules.So that it maintains the reuse function.
 
-* Beego design: request --> routers --> controllers --> models
-* My design: request --> controllers --> modules  --> models
+* Beego design: request → routers → controllers → models
+* My design: request → controllers → modules  → models & tools
 
 ##Usage
 
