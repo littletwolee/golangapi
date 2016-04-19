@@ -27,14 +27,15 @@ Follow Beego. I'm just add modules for business logic layer. Package Models is o
 
 ##Usage
 
-1. cd YOUR_CODE_PWD
-2. export GOPATH=$pwd #Set this path of your gopath
-3. go get github.com/astaxie/beego #need build it
-4. go get gopkg.in/mgo.v2 #need build it
-5. cd src & git clone https://github.com/littletwolee/mongoapi.git
-6. cd conf & vim app.conf
-7. mongohost = "mongodb host"
+	cd YOUR_CODE_PWD
+	export GOPATH=$pwd #Set this path of your gopath
+	go get github.com/astaxie/beego #need build it
+   go get gopkg.in/mgo.v2 #need build it
+   
+   cd src & git clone https://github.com/littletwolee/mongoapi.git
+   cd conf & vim app.conf
+   mongohost = "mongodb host"
    mongoport = "mongodb port"
    mongodbname = "dbname"
-7. cd ../ & bee run
+   cd ../ & bee run
 
