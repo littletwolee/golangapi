@@ -1,15 +1,11 @@
 package models
 
-var (
-	Users map[string]*User
-)
+import "time"
 
 type User struct {
 //	ObjectId string
-	Name string
-	Pwd string
+	Name         string
+	Pwd          string
+	CreateDate   time.Time
 }
 
-func (this User)New() User{
-	return User{}
-}

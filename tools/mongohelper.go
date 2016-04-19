@@ -5,6 +5,7 @@ import(
 	"gopkg.in/mgo.v2"
         "gopkg.in/mgo.v2/bson"
 	"log"
+	"time"
 //	"mongoapi/models"
 )
 
@@ -16,6 +17,7 @@ var (
 	url          string = host + ":" + port
 	result       string
 )
+type MongoHelper struct{}
 
 func Session() *mgo.Session {
     if session == nil {
@@ -28,7 +30,7 @@ func Session() *mgo.Session {
     return session.Clone()
 }
 
-func GetOneById(collectionname string, objectId string) (result []byte, err error){
+func (m *MongoHelper)GetOneById(collectionname string, objectId string) (result []byte, err error){
 	session := Session()
 	db := session.DB(dbname)
 	collection := db.C(collectionname)
@@ -46,7 +48,7 @@ func GetOneById(collectionname string, objectId string) (result []byte, err erro
 	return result, nil
 }
 
-func GetOneByFilter(collectionname string, filters map[string]string) (result []byte, err error){
+func (m *MongoHelper)GetOneByFilter(collectionname string, filters map[string]string) (result []byte, err error){
 	session := Session()
 	db := session.DB(dbname)
 	collection := db.C(collectionname)
@@ -74,7 +76,7 @@ func GetOneByFilter(collectionname string, filters map[string]string) (result []
 	return result, nil
 }
 
-func GetAll(collectionname string) (result [][]byte, err error){
+func (m *MongoHelper)GetAll(collectionname string) (result [][]byte, err error){
 	session := Session()
 	db := session.DB(dbname)
 	collection := db.C(collectionname)
@@ -95,4 +97,29 @@ func GetAll(collectionname string) (result [][]byte, err error){
 	return result, nil
 }
 
-//func GetIter
+func (m *MongoHelper)Create(collectionname string, object interface{}) (objectId string ,err error) {
+	session := Session()
+	db := session.DB(dbname)
+	collection := db.C(collectionname)
+	databyte, err := bson.Marshal(object)
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+	data := bson.M{}
+	err = bson.Unmarshal(databyte, data)
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+	data["createdate"] = time.Now()
+	newid := bson.NewObjectId()
+	log.Println(data["createdate"].(time.Time))
+	data["_id"] = newid
+	err = collection.Insert(data)
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+	return newid.String(), nil
+}

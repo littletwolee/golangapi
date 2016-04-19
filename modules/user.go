@@ -12,9 +12,11 @@ var(
 	
 )
 
-func GetOneById(ObjectId string) (user models.User, err error){
+type User struct{}
+
+func (u *User)GetOneById(ObjectId string) (user models.User, err error){
 	result := models.User{}
-	data, err := tools.GetOneById(collectionname, ObjectId)
+	data, err := (&tools.MongoHelper{}).GetOneById(collectionname, ObjectId)
 	if err != nil {
 		return models.User{}, err
 	}
@@ -25,9 +27,9 @@ func GetOneById(ObjectId string) (user models.User, err error){
 	return result, nil
 }
 
-func GetOneByFilter(filters map[string]string) (user models.User, err error){
+func (u *User)GetOneByFilter(filters map[string]string) (user models.User, err error){
 	result := models.User{}
-	data, err := tools.GetOneByFilter(collectionname, filters)
+	data, err := (&tools.MongoHelper{}).GetOneByFilter(collectionname, filters)
 	if err != nil {
 		return models.User{}, err
 	}
@@ -38,9 +40,9 @@ func GetOneByFilter(filters map[string]string) (user models.User, err error){
 	return result, nil
 }
 
-func GetAll() (users []models.User,err error){
+func (u *User)GetAll() (users []models.User,err error){
 	result := []models.User{}
-	data, err := tools.GetAll(collectionname)
+	data, err := (&tools.MongoHelper{}).GetAll(collectionname)
 	if err != nil {
 		log.Panicln(err)
 		return result, err
@@ -55,4 +57,13 @@ func GetAll() (users []models.User,err error){
 		result = append(result, resultitem)
 	} 
 	return result, nil
+}
+
+func (u *User)Create(user models.User) (objectId string ,err error) {
+	objectId, err = (&tools.MongoHelper{}).Create(collectionname, user)
+	if err != nil {
+		log.Panicln(err)
+		return "", err
+	}
+	return objectId, nil
 }

@@ -19,6 +19,7 @@ func init() {
 			beego.NSRouter("/Id/?:objectId", &controllers.UserController{},"get:GetOneById"),
 			beego.NSRouter("/Name/?:name", &controllers.UserController{},"get:GetOneByName"),
 			beego.NSRouter("/list", &controllers.UserController{},"get:GetAll"),
+			beego.NSRouter("/Create", &controllers.UserController{},"post:Create"),
 		),		
 	)
 	beego.AddNamespace(ns)
