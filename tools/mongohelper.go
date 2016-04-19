@@ -146,3 +146,45 @@ func (m *MongoHelper) DeleteDoc (collectionname string, objectId string) error {
 	}
 	return nil
 }
+
+func (m *MongoHelper) PushItem (collectionname string, objectId string, fildName string, object interface{}) error {
+	session := Session()
+	db := session.DB(dbname)
+	collection := db.C(collectionname)
+	if ! bson.IsObjectIdHex(objectId) {
+		err := errors.New("It is not a objectId")
+		log.Println(err)
+		return err
+	}
+	err := collection.Update(bson.M{"_id": bson.ObjectIdHex(objectId)},
+		bson.M{"$push": bson.M{
+			"\""+fildName+"\"": object,
+		}})
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
+}
+
+func (m *MongoHelper) PullItem (collectionname string, objectId string, fildName string, object interface{}) error {
+	session := Session()
+	db := session.DB(dbname)
+	collection := db.C(collectionname)
+	if ! bson.IsObjectIdHex(objectId) {
+		err := errors.New("It is not a objectId")
+		log.Println(err)
+		return err
+	}
+	err := collection.Update(bson.M{"_id": bson.ObjectIdHex(objectId)},
+		bson.M{"$pull": bson.M{
+			"\""+fildName+"\"": object,
+		}})
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
+}
+
+
