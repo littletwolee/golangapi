@@ -16,11 +16,11 @@ import (
 func init() {
 	ns := beego.NewNamespace("/api",
 		beego.NSNamespace("/user",
-			beego.NSRouter("/Id/?:objectId", &controllers.UserController{},"get:GetOneUserById"),
-			beego.NSRouter("/Name/?:name", &controllers.UserController{},"get:GetOneUserByName"),
+			beego.NSRouter("/id/?:objectId", &controllers.UserController{},"get:GetOneUserById"),
+			beego.NSRouter("/name/?:name", &controllers.UserController{},"get:GetOneUserByName"),
 			beego.NSRouter("/list", &controllers.UserController{},"get:GetAllUsers"),
-			beego.NSRouter("/Create", &controllers.UserController{},"post:CreateUser"),
-			beego.NSRouter("/Delete/?:objectId", &controllers.UserController{},"delete:DeleteUser"),
+			beego.NSRouter("/create", &controllers.UserController{},"post:CreateUser"),
+			beego.NSRouter("/delete/?:objectId", &controllers.UserController{},"delete:DeleteUser"),
 		),		
 	)
 	beego.AddNamespace(ns)
