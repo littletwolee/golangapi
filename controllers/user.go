@@ -6,7 +6,7 @@ import (
 	"github.com/astaxie/beego"
 	"encoding/json"
 	"strconv" 
-	"log"
+//	"log"
 )
 
 // Operations about object
@@ -92,7 +92,6 @@ func (u *UserController) CreateUser() {
 // @router / [delete]
 func (u *UserController) DeleteUser() {
 	objectId := u.Ctx.Input.Param(":objectId")
-	log.Println(objectId)
 	err := (&modules.User{}).DeleteUser(objectId)
 	if err != nil {
 		u.Data["json"] = err.Error()
