@@ -127,7 +127,7 @@ func (m *MongoHelper) Create (collectionname string, object interface{}) (object
 		log.Println(err)
 		return "", err
 	}
-	return newid.String(), nil
+	return newid.Hex(), nil
 }
 
 func (m *MongoHelper) DeleteDoc (collectionname string, objectId string) error {	
