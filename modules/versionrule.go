@@ -1,7 +1,7 @@
 package modules
 
 import(
-//	"mongoapi/models"
+	"mongoapi/models"
 	"mongoapi/tools"
 //	"log"
 	"gopkg.in/mgo.v2/bson"
@@ -13,8 +13,10 @@ var(
 
 type VersionRule struct{}
 
-func (v *VersionRule) GetRuleByFilter (filters []map[string]interface{}) (result []int, err error){
+func (v *VersionRule) GetRuleByFilter (filters []map[string]interface{}) (resule []int, err error){
 	data, err := (&tools.MongoHelper{}).GetFieldByFilter(versionrulecname, filters)
-	err = bson.Unmarshal(data, &result)
-	return result, err
+	versionrule := models.VersionRule{}
+	err = bson.Unmarshal(data, &versionrule)
+	resule = versionrule.Rule
+	return resule, err
 }
