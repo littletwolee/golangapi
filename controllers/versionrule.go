@@ -16,16 +16,16 @@ type VersionRuleController struct {
 
 // @Title GetOneVersionRuleByVersion
 // @Description find rule by filters
-// @Param	name	"the name you want to get"
-// @Success 200 []int 
+// @Param	version	     "the version you want to get"
+// @Success 200 string 
 // @Failure 403 :version is empty
 // @router /:version [get]
 func (v *VersionRuleController) GetOneVersionRuleByVersion() {
 	version :=  v.Ctx.Input.Param(":version")
 	if version != "" {
-		var filters []map[string]interface{}
-		filters = append(filters, map[string]interface{}{ "version" : version })
-		filters = append(filters, map[string]interface{}{ "rule" : 1 })
+		filters := make(map[string]interface{})
+		filters["query"] = map[string]string{ "version" : version }
+		filters["field"] = map[string]int{ "rule" : 1 , "_id" : 0 }
 		ob, err := (&modules.VersionRule{}).GetRuleByFilter(filters)
 		if err != nil {
 			v.Data["json"] = err.Error()

@@ -9,7 +9,6 @@ package routers
 
 import (
 	"mongoapi/controllers"
-
 	"github.com/astaxie/beego"
 )
 
@@ -22,6 +21,7 @@ func init() {
 			beego.NSRouter("/create", &controllers.UserController{},"post:CreateUser"),
 			beego.NSRouter("/delete/?:objectId", &controllers.UserController{},"delete:DeleteUser"),
 		),
+		
 		beego.NSNamespace("/versionrule",
 			beego.NSRouter("/rule/?:version", &controllers.VersionRuleController{},"get:GetOneVersionRuleByVersion"),
 		),

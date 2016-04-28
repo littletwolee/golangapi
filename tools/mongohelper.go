@@ -82,26 +82,12 @@ func (m *MongoHelper) GetOneByFilter (collectionname string, filters map[string]
 	return result, nil
 }
 
-func (m *MongoHelper) GetFieldByFilter (collectionname string, filters []map[string]interface{}) (result []byte, err error){
+func (m *MongoHelper) GetFieldByFilter (collectionname string, filters map[string]interface{}) (result []byte, err error){
 	session := Session()
 	db := session.DB(dbname)
 	collection := db.C(collectionname)
-	//field, err := bson.Marshal(filters[0])
-	// if err != nil {
-	// 	log.Println(err)
-	// 	return nil, err
-	// }
-	// filter, err := bson.Marshal(filters[1])
-	// if err != nil {
-	// 	log.Println(err)
-	// 	return nil, err
-	// }
-	filter := bson.M{"version" : "1.0.0"}
-	field := bson.M{"rule": 1}
 	data := bson.M{}
-	// data = append(data, bson.M{"version" : "1.0.0"})
-	// data = append(data, bson.M{"rule" : 1})
-	err = collection.Find(filter).Select(field).One(&data)
+	err = collection.Find(filters["query"]).Select(filters["field"]).One(&data)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -111,7 +97,6 @@ func (m *MongoHelper) GetFieldByFilter (collectionname string, filters []map[str
 		log.Println(err)
 		return nil, err
 	}
-	log.Println(result)
 	return result, nil
 }
 
