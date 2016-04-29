@@ -99,7 +99,6 @@ func (m *MongoHelper) GetFieldByFilter (collectionname string, filters map[strin
 	}
 	return result, nil
 }
-
 func (m *MongoHelper) GetAll (collectionname string) (result [][]byte, err error){
 	session := Session()
 	db := session.DB(dbname)
