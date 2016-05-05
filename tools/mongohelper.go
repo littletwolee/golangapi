@@ -1,8 +1,8 @@
 package tools
 
 import(
-	"github.com/astaxie/beego"
-	"gopkg.in/mgo.v2"
+//	"github.com/astaxie/beego"
+//	"gopkg.in/mgo.v2"
         "gopkg.in/mgo.v2/bson"
 	"log"
 	"errors"
@@ -10,26 +10,18 @@ import(
 //	"mongoapi/models"
 )
 
-var (
-	session      *mgo.Session
-	host         string = beego.AppConfig.String("mongohost")
-	port         string = beego.AppConfig.String("mongoport")
-	dbname       string = beego.AppConfig.String("mongodbname")
-	url          string = host + ":" + port
-	result       string
-)
 type MongoHelper struct{}
 
-func Session() *mgo.Session {
-    if session == nil {
-        var err error
-        session, err = mgo.Dial(url)
-        if err != nil {
-            panic(err) 
-        }
-    }
-    return session.Clone()
-}
+// func Session() *mgo.Session {
+//     if session == nil {
+//         var err error
+//         session, err = mgo.Dial(url)
+//         if err != nil {
+//             panic(err) 
+//         }
+//     }
+//     return session.Clone()
+// }
 
 func (m *MongoHelper) GetOneById (collectionname string, objectId string) (result []byte, err error){
 	session := Session()
@@ -137,7 +129,7 @@ func (m *MongoHelper) Create (collectionname string, object interface{}) (object
 	}
 	data["createdate"] = time.Now()
 	newid := bson.NewObjectId()
-	log.Println(data["createdate"].(time.Time))
+	//log.Println(data["createdate"].(time.Time))
 	data["_id"] = newid
 	err = collection.Insert(data)
 	if err != nil {

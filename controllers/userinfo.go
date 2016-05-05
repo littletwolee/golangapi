@@ -83,3 +83,22 @@ func (u *UserinfoController) UpdateUserinfoById() {
 	}
 	u.ServeJSON()
 }
+
+// // @Title UpdateUserinfoById
+// // @Description update userinfo
+// // @Success 200 err nil
+// // @Failure 403 
+// // @router / [post]
+// func (u *UserinfoController) UploadUserPic() {
+// 	objectId := u.Ctx.Input.Param(":objectId")
+// 	var userinfo map[string]interface{}
+// 	json.Unmarshal(u.Ctx.Input.RequestBody, &userinfo)
+// 	err := (&modules.Userinfo{}).UpdateUserinfoById(objectId, userinfo)
+// 	if err != nil {
+// 		u.Data["json"] = err.Error()
+// 	} else {
+// 		u.Data["json"] = map[string]string{"status": strconv.FormatBool(true)}
+// 	}
+// 	u.ServeJSON()
+// }
+// UploadUserPic

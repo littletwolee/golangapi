@@ -7,9 +7,9 @@ import(
 	"gopkg.in/mgo.v2/bson"
 )
 
-const usercname = "user"
-
 type User struct{}
+
+const usercname = "user"
 
 func (u *User) GetOneUserById (ObjectId string) (user models.User, err error){
 	result := models.User{}
