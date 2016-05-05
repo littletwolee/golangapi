@@ -7,9 +7,7 @@ import(
 	"gopkg.in/mgo.v2/bson"
 )
 
-var(
-	versionrulecname       string = "versionrule"
-)
+const versionrulecname = "versionrule"
 
 type VersionRule struct{}
 

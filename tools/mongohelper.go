@@ -147,6 +147,42 @@ func (m *MongoHelper) Create (collectionname string, object interface{}) (object
 	return newid.Hex(), nil
 }
 
+func (m *MongoHelper) Update (collectionname string, filters map[string]interface{}) error {
+	session := Session()
+	db := session.DB(dbname)
+	collection := db.C(collectionname)
+	err := collection.Update(filters["query"], filters["items"])
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
+}
+
+func (m *MongoHelper) UpdateById (collectionname string,objectId string, object interface{}) error {
+	session := Session()
+	db := session.DB(dbname)
+	collection := db.C(collectionname)
+	databyte, err := bson.Marshal(object)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	data := bson.M{}
+	err = bson.Unmarshal(databyte, data)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	data["lastmodifydate"] = time.Now()
+	err = collection.Update(bson.M{"_id" : bson.ObjectIdHex(objectId)}, bson.M{"$set" : data}) 
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
+}
+
 func (m *MongoHelper) DeleteDoc (collectionname string, objectId string) error {	
 	session := Session()
 	db := session.DB(dbname)
@@ -156,7 +192,7 @@ func (m *MongoHelper) DeleteDoc (collectionname string, objectId string) error {
 		log.Println(err)
 		return err
 	}
-	err := collection.Remove(bson.M{"_id":bson.ObjectIdHex(objectId)})
+	err := collection.Remove(bson.M{"_id" : bson.ObjectIdHex(objectId)})
 	if err != nil {
 		log.Println(err)
 		return err

@@ -7,10 +7,7 @@ import(
 	"gopkg.in/mgo.v2/bson"
 )
 
-var(
-	usercname       string = "user"
-	
-)
+const usercname = "user"
 
 type User struct{}
 

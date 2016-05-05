@@ -25,6 +25,13 @@ func init() {
 		beego.NSNamespace("/versionrule",
 			beego.NSRouter("/rule/?:version", &controllers.VersionRuleController{},"get:GetOneVersionRuleByVersion"),
 		),
+
+		beego.NSNamespace("/userinfo",
+			beego.NSRouter("/id/?:objectId", &controllers.UserinfoController{},"get:GetOneUserinfoById"),
+			beego.NSRouter("/create", &controllers.UserinfoController{},"post:CreateUserinfo"),
+			beego.NSRouter("/delete/?:objectId", &controllers.UserinfoController{},"delete:DeleteUserinfo"),
+			beego.NSRouter("/update/?:objectId", &controllers.UserinfoController{},"post:UpdateUserinfoById"),
+		),
 	)
 	beego.AddNamespace(ns)
 }
