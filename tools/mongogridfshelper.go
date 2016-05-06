@@ -10,12 +10,14 @@ import(
 //	"mongoapi/models"
 )
 
+const gridfscname = "fs"
+
 type MongoGridFSHelper struct{}
 
 func (m *MongoGridFSHelper) GetFileById (collectionname string, objectId string) (result []byte, err error){
 	session := Session()
 	db := session.DB(dbname)
-	collection := db.C(collectionname)
+	collection := db.GridFS(collectionname)
 	data := bson.M{}
 	if ! bson.IsObjectIdHex(objectId) {
 		err = errors.New("It is not a objectId")
@@ -40,7 +42,7 @@ func (m *MongoGridFSHelper) UploadFile (data []byte, parameters map[string]inter
 	session := Session()
 	db := session.DB(dbname)
 	newid := bson.NewObjectId()
-	file, err := db.GridFS("fs").Create(newid.Hex() + "." + parameters["type"].(string))
+	file, err := db.GridFS(gridfscname).Create(newid.Hex() + "." + parameters["type"].(string))
 	if err != nil {
 		log.Println(err)
 		return "", err
@@ -63,16 +65,10 @@ func (m *MongoGridFSHelper) UploadFile (data []byte, parameters map[string]inter
 }
 
 
-func (m *MongoGridFSHelper) DeleteFile (collectionname string, objectId string) error {	
+func (m *MongoGridFSHelper) DeleteFileById (objectId string) error {	
 	session := Session()
 	db := session.DB(dbname)
-	collection := db.C(collectionname)
-	if ! bson.IsObjectIdHex(objectId) {
-		err := errors.New("It is not a objectId")
-		log.Println(err)
-		return err
-	}
-	err := collection.Remove(bson.M{"_id" : bson.ObjectIdHex(objectId)})
+	err := db.GridFS(gridfscname).RemoveId(bson.ObjectIdHex(objectId))
 	if err != nil {
 		log.Println(err)
 		return err
