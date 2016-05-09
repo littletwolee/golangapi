@@ -28,5 +28,13 @@ func (f *Filehelper)writefile(filename string, file []byte) error {
 		return newerr("file is exists")
 	}
 	err := ioutil.WriteFile(path, file, 0666)  //写入文件(字节数组)
-	return checkerr(err)	
+	return err
+}
+
+func (f *Filehelper)readfile(filename string) (file []byte, err error){
+	file, err = ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+	return file, nil
 }

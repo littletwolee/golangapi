@@ -3,7 +3,7 @@ package modules
 import(
 	"mongoapi/models"
 	"mongoapi/tools"
-	"log"
+//	"log"
 	"gopkg.in/mgo.v2/bson"
 )
 const userinfocname = "userinfo"
@@ -37,28 +37,28 @@ func (u *Userinfo) UpdateUserinfoById(ObjectId string, userinfo map[string]inter
 	return (&tools.MongoHelper{}).UpdateById(userinfocname, ObjectId, userinfo)
 }
 
-func (u *Userinfo) UploadUserPic(file []byte, parameters map[string]interface{}, thisnum int, maxnum) error{
-	switch {
-	case thisnum == 1 && thisnum == maxnum:
-		objectId, err := (&tools.MongoGridFSHelper{}).UploadFile(file, parameters)
-	case thisnum == 1 && thisnum < maxnum:
-		(&tools.Filehelper{}).
-	}
-	if err != nil {
-			log.Println(err)
-			return err
-		}
-		userid := parameters["imname"].(string)
-		userinfo := bson.M{"$set" : bson.M{"pic" : objectId}}
-		err = (&tools.MongoHelper{}).UpdateById(userinfocname, userid, userinfo)
-		if err != nil {
-			log.Println(err)
-			err = (&tools.MongoGridFSHelper{}).DeleteFileById(objectId)
-			if err != nil {
-				log.Println(err)
-				return err
-			}
-			return err
-		}
+func (u *Userinfo) UploadUserPic(file []byte, parameters map[string]interface{}) error{
+	// switch {
+	// case parameters["offset"] == 1 && thisnum == maxnum:
+	// 	objectId, err := (&tools.MongoGridFSHelper{}).UploadFile(file, parameters)
+	// case thisnum == 1 && thisnum < maxnum:
+	// 	(&tools.Filehelper{}).
+	// }
+	// if err != nil {
+	// 		log.Println(err)
+	// 		return err
+	// 	}
+	// 	userid := parameters["imname"].(string)
+	// 	userinfo := bson.M{"$set" : bson.M{"pic" : objectId}}
+	// 	err = (&tools.MongoHelper{}).UpdateById(userinfocname, userid, userinfo)
+	// 	if err != nil {
+	// 		log.Println(err)
+	// 		err = (&tools.MongoGridFSHelper{}).DeleteFileById(objectId)
+	// 		if err != nil {
+	// 			log.Println(err)
+	// 			return err
+	// 		}
+	// 		return err
+	// 	}
 	return nil
 }

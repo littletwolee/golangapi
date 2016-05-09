@@ -6,7 +6,7 @@ import (
 	"github.com/astaxie/beego"
 	"encoding/json"
 	"strconv" 
-//	"log"
+	"log"
 )
 
 // Operations about object
@@ -90,15 +90,19 @@ func (u *UserinfoController) UpdateUserinfoById() {
 // @Failure 403 
 // @router / [post]
 func (u *UserinfoController) UploadUserPic() {
-	file, fileheader, err := u.GetFile("pic")
-	if err != nil {
-		u.Data["json"] = err.Error()
-	} else {
-		path :="./" + fileheader.Filename
-		file.Close()
-		u.SaveToFile("pic", path)
-		u.Data["json"] = map[string]string{"status": strconv.FormatBool(true)}
-	}
+
+	
+	// file, fileheader, err := u.GetFile("pic")
+	// if err != nil {
+	// 	u.Data["json"] = err.Error()
+	// } else {
+	// 	path :="./" + fileheader.Filename
+	// 	file.Close()
+	// 	u.SaveToFile("pic", path)
+	// 	u.Data["json"] = map[string]string{"status": strconv.FormatBool(true)}
+	// }
+
+	
 // 	f, h, _ := this.GetFile("image")	//获取上传的文件
 // 	path := this.Input().Get("url")	//存文件的路径    
 // path = path[7:]	    
@@ -115,6 +119,21 @@ func (u *UserinfoController) UploadUserPic() {
 	// } else {
 	// 	u.Data["json"] = map[string]string{"status": strconv.FormatBool(true)}
 	// }
+	f, _, _ := u.GetFile("file")
+	//rule := u.Input().Get("rule")
+	// //获取上传的文件
+	// path := u.Input().Get("url")	//存文件的路径
+	// log.Println(path)
+	// path = path[7:]	    
+	//path := "./"+ h.Filename
+	 f.Close()	// 关闭上传的文件，不然的话会出现临时文件不能清除的情况    
+	//u.SaveToFile("file", path)	//存文件    WaterMark(path)	//给文件加水印
+	data := make([]byte, 8668)
+	_, err := f.Read(data)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println(data[0])
 	u.ServeJSON()
 }
 
