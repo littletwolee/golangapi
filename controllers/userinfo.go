@@ -90,50 +90,41 @@ func (u *UserinfoController) UpdateUserinfoById() {
 // @Failure 403 
 // @router / [post]
 func (u *UserinfoController) UploadUserPic() {
-
-	
-	// file, fileheader, err := u.GetFile("pic")
-	// if err != nil {
-	// 	u.Data["json"] = err.Error()
-	// } else {
-	// 	path :="./" + fileheader.Filename
-	// 	file.Close()
-	// 	u.SaveToFile("pic", path)
-	// 	u.Data["json"] = map[string]string{"status": strconv.FormatBool(true)}
-	// }
-
-	
-// 	f, h, _ := this.GetFile("image")	//获取上传的文件
-// 	path := this.Input().Get("url")	//存文件的路径    
-// path = path[7:]	    
-// path = "./static/img/" + path + "/" + h.Filename	    
-// f.Close()	// 关闭上传的文件，不然的话会出现临时文件不能清除的情况    
-// this.SaveToFile("image", path)	//存文件    WaterMark(path)	//给文件加水印    
-// this.Redirect("/addphoto", 302)
-	// objectId := u.Ctx.Input.Param(":objectId")
-	// var userinfo map[string]interface{}
-	// json.Unmarshal(u.Ctx.Input.RequestBody, &userinfo)
-	// err := (&modules.Userinfo{}).UploadUserPic(objectId, userinfo)
-	// if err != nil {
-	// 	u.Data["json"] = err.Error()
-	// } else {
-	// 	u.Data["json"] = map[string]string{"status": strconv.FormatBool(true)}
-	// }
-	f, _, _ := u.GetFile("file")
-	//rule := u.Input().Get("rule")
-	// //获取上传的文件
-	// path := u.Input().Get("url")	//存文件的路径
-	// log.Println(path)
-	// path = path[7:]	    
-	//path := "./"+ h.Filename
-	 f.Close()	// 关闭上传的文件，不然的话会出现临时文件不能清除的情况    
-	//u.SaveToFile("file", path)	//存文件    WaterMark(path)	//给文件加水印
-	data := make([]byte, 8668)
-	_, err := f.Read(data)
+	var resultdata = new(models.ResponseResult)
+	f, h, err := u.GetFile("file")
 	if err != nil {
-		log.Fatal(err)
+		resultdata = &models.ResponseResult{nil, err.Error(), 500, false}
 	}
-	log.Println(data[0])
+	f.Close()
+	file := models.Filemodel{}
+	file.Filename = h.Filename
+	file.Contenttype = u.Input().Get("Content-Type")
+	file.Filetype = u.Input().Get("filetype")
+	bytesize ,err := strconv.Atoi(u.Input().Get("bytesize"))
+	if err != nil {
+		resultdata = &models.ResponseResult{nil, err.Error(), 500, false}
+	}
+	filedata := make([]byte, bytesize)
+	_, err = f.Read(filedata)
+	if err != nil {
+		resultdata = &models.ResponseResult{nil, err.Error(), 500, false}
+	}
+	file.Filedata = filedata
+	file.Currentchunk ,err = strconv.Atoi(u.Input().Get("currentchunk"))
+	if err != nil {
+		resultdata = &models.ResponseResult{nil, err.Error(), 500, false}
+	}
+	file.Maxchunks ,err = strconv.Atoi(u.Input().Get("maxchunks"))
+	if err != nil {
+		resultdata = &models.ResponseResult{nil, err.Error(), 500, false}
+	}
+	filename ,err := (&modules.Userinfo{}).UploadUserPic(file)
+	if err != nil {
+		resultdata = &models.ResponseResult{nil, err.Error(), 500, false}
+	}
+	resultdata = &models.ResponseResult{filename, err.Error(), 200, true}
+	log.Println(resultdata.Filename)
+	u.Data["json"] = resultdata
 	u.ServeJSON()
 }
 

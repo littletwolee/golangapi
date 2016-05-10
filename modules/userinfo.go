@@ -3,7 +3,7 @@ package modules
 import(
 	"mongoapi/models"
 	"mongoapi/tools"
-//	"log"
+	"log"
 	"gopkg.in/mgo.v2/bson"
 )
 const userinfocname = "userinfo"
@@ -37,7 +37,8 @@ func (u *Userinfo) UpdateUserinfoById(ObjectId string, userinfo map[string]inter
 	return (&tools.MongoHelper{}).UpdateById(userinfocname, ObjectId, userinfo)
 }
 
-func (u *Userinfo) UploadUserPic(file []byte, parameters map[string]interface{}) error{
+func (u *Userinfo) UploadUserPic(filemode models.Filemodel) (string, error) {
+	// if 
 	// switch {
 	// case parameters["offset"] == 1 && thisnum == maxnum:
 	// 	objectId, err := (&tools.MongoGridFSHelper{}).UploadFile(file, parameters)
@@ -60,5 +61,24 @@ func (u *Userinfo) UploadUserPic(file []byte, parameters map[string]interface{})
 	// 		}
 	// 		return err
 	// 	}
-	return nil
+	// return nil
+	filehelper := &tools.Filehelper{}
+	// guid := ""
+	// if filemode.Currentchunk == 0 {
+	// 	guid = tools.GetGuid()
+	// }
+	filename := "3eac093fba68a6adc785a4ebd7362640" + "." + filemode.Filetype
+	switch {
+	case filemode.Currentchunk == 0:
+		return filehelper.WriteFile(filename, filemode.Filedata)
+	case filemode.Currentchunk <= filemode.Maxchunks - 1 :
+		log.Println(filename)
+		filechunkdata ,err := filehelper.ReadFile(filename)
+		if err != nil {
+			return "", err
+		}
+		newdata := append(filechunkdata, filemode.Filedata...)
+		return filehelper.WriteFile(filename, newdata)
+	}
+	return "", (&tools.ResultHelp{}).NewErr("server err")
 }

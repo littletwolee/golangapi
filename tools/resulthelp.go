@@ -5,9 +5,9 @@ import(
 	"errors"
 )
 
-type Resulthelp struct{}
+type ResultHelp struct{}
 
-func checkerr(err error) error {
+func (r *ResultHelp)CheckErr(err error) error {
 	if err != nil {
 		log.Println(err)
 		return err
@@ -15,6 +15,6 @@ func checkerr(err error) error {
 	return nil
 }
 
-func newerr(err string) error {
+func (r *ResultHelp)NewErr(err string) error {
 	return errors.New(err)
 }

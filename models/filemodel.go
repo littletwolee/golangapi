@@ -1,8 +1,10 @@
 package models
 
 type Filemodel struct {
-	Filename     string
-	Contenttype  string
-	Filedata     []byte
+	Filename       string
+	Filedata       []byte
+	Contenttype    string
+	Filetype       string
+	Currentchunk   int
+	Maxchunks      int
 }
-
