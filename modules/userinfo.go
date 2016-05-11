@@ -3,7 +3,7 @@ package modules
 import(
 	"golangapi/models"
 	"golangapi/tools"
-	"log"
+//	"log"
 	"gopkg.in/mgo.v2/bson"
 )
 const userinfocname = "userinfo"
@@ -62,24 +62,34 @@ func (u *Userinfo) UploadUserPic(filemode models.Filemodel) (string, error) {
 	// 		return err
 	// 	}
 	// return nil
+
+
+	
 	filename := ""
 	filehelper := &tools.Filehelper{}
+	redishelper := &tools.RedisHelper{}
 	if filemode.Currentchunk == 0 {
-		filename = tools.GetGuid() + "." + filemode.Filetype
+		filename = tools.GetGuid() 
 	} else {
 		filename = filemode.Filename
 	}
 	switch {
-	case filemode.Currentchunk == 0:
-		return filehelper.WriteFile(filename, filemode.Filedata)
-	case filemode.Currentchunk <= filemode.Maxchunks - 1 :
-		log.Println(filename)
-		filechunkdata ,err := filehelper.ReadFile(filename)
-		if err != nil {
-			return "", err
+	case filemode.Currentchunk == 0 && filemode.Currentchunk < filemode.Maxchunks - 1:
+		if err := redishelper.SetKVBySETEX(filename, filemode.Filedata, 300); err == nil {
+			return filename, nil
 		}
-		newdata := append(filechunkdata, filemode.Filedata...)
-		return filehelper.WriteFile(filename, newdata)
+		
+		//return filehelper.WriteFile(filename, filemode.Filedata)
+		
+	case filemode.Currentchunk == 0 && filemode.Currentchunk == filemode.Maxchunks - 1 :
+		return filehelper.WriteFile(filename, filemode.Filedata)
+	case filemode.Currentchunk != 0 && filemode.Currentchunk < filemode.Maxchunks - 1 :
+		if filechunkdata ,err := redishelper.GetVByK(filename, "bytes"); err == nil {
+				return filename, nil
+		} else {
+			newdata := append(filechunkdata.([]byte), filemode.Filedata...)
+			return filehelper.WriteFile(filename, newdata)
+		}
 	}
 	return "", (&tools.ResultHelp{}).NewErr("server err")
 }
