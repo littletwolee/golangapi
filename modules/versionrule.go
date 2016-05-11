@@ -1,8 +1,8 @@
 package modules
 
 import(
-//	"mongoapi/models"
-	"mongoapi/tools"
+//	"golangapi/models"
+	"golangapi/tools"
 //	"log"
 	"gopkg.in/mgo.v2/bson"
 )

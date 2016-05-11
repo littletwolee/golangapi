@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"mongoapi/modules"
-//	"mongoapi/models"
+	"golangapi/modules"
+//	"golangapi/models"
 	"github.com/astaxie/beego"
 //	"encoding/json"
 //	"strconv" 

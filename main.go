@@ -1,8 +1,8 @@
 package main
 
 import (
-	_ "mongoapi/docs"
-	_ "mongoapi/routers"
+	_ "golangapi/docs"
+	_ "golangapi/routers"
 
 	"github.com/astaxie/beego"
 )

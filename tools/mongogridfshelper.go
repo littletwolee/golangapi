@@ -7,7 +7,7 @@ import(
 	"log"
 	"errors"
 	"time"
-//	"mongoapi/models"
+//	"golangapi/models"
 )
 
 const gridfscname = "fs"

@@ -8,7 +8,7 @@
 package routers
 
 import (
-	"mongoapi/controllers"
+	"golangapi/controllers"
 	"github.com/astaxie/beego"
 )
 
