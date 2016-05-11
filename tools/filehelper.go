@@ -2,16 +2,16 @@ package tools
 
 import (
 	"github.com/astaxie/beego"
-//	"bufio"  //缓存IO
+//	"bufio" 
 //	"fmt"
-	"io/ioutil" //io 工具包
+	"io/ioutil"
 //	"io"
-//	"os"
+	"os"
 //	"log"
 )
 
 var (
-	cache         string = beego.AppConfig.String("filecache")
+	filecache         string = beego.AppConfig.String("filecache")
 )
 type Filehelper struct{}
 
@@ -23,25 +23,31 @@ type Filehelper struct{}
 // 	return exist
 // }
 
-// func checkFileIsExist(filename string) (bool) {
-// 	var exist = true;
-// 	if _, err := os.Stat(filename); os.IsNotExist(err) {
-// 		exist = false;
-// 	}
-// 	return exist;
-// }
+func checkFileIsExist(dirpath string, filename string) (bool) {
+	var exist = true;
+	if _, err := os.Stat(dirpath); os.IsNotExist(err) {
+		_ = os.MkdirAll(dirpath, 0777)
+	}
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
+		exist = false;
+	}
+	return exist;
+}
 
 func (f *Filehelper)WriteFile(filename string, file []byte) (string, error) {
-	path := cache + "/" + filename
-	// if checkFileIsExist(path) {
-	// 	return "", (&ResultHelp{}).NewErr("file is exists")
-	// }
-	err := ioutil.WriteFile(path, file, 0666)  //写入文件(字节数组)
+	if checkFileIsExist(filecache, filename) {
+		return "", (&ResultHelp{}).NewErr("file is exists")
+	}
+	path := filecache + "/" + filename
+	err := ioutil.WriteFile(path, file, 0777)
 	return filename, err
 }
 
 func (f *Filehelper)ReadFile(filename string) ([]byte, error){
-	path := cache + "/" + filename
+	if checkFileIsExist(filecache, filename) {
+		return nil, (&ResultHelp{}).NewErr("file is exists")
+	}
+	path := filecache + "/" + filename
 	file, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err

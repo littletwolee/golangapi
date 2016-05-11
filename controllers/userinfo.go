@@ -6,7 +6,7 @@ import (
 	"github.com/astaxie/beego"
 	"encoding/json"
 	"strconv" 
-	"log"
+//	"log"
 )
 
 // Operations about object
@@ -90,7 +90,7 @@ func (u *UserinfoController) UpdateUserinfoById() {
 // @Failure 403 
 // @router / [post]
 func (u *UserinfoController) UploadUserPic() {
-	var resultdata = new(models.ResponseResult)
+	resultdata := &models.ResponseResult{}
 	f, h, err := u.GetFile("file")
 	if err != nil {
 		resultdata = &models.ResponseResult{nil, err.Error(), 500, false}
@@ -122,8 +122,7 @@ func (u *UserinfoController) UploadUserPic() {
 	if err != nil {
 		resultdata = &models.ResponseResult{nil, err.Error(), 500, false}
 	}
-	resultdata = &models.ResponseResult{filename, err.Error(), 200, true}
-	log.Println(resultdata.Filename)
+	resultdata = &models.ResponseResult{filename, "", 200, true}
 	u.Data["json"] = resultdata
 	u.ServeJSON()
 }

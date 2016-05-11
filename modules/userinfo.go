@@ -62,12 +62,13 @@ func (u *Userinfo) UploadUserPic(filemode models.Filemodel) (string, error) {
 	// 		return err
 	// 	}
 	// return nil
+	filename := ""
 	filehelper := &tools.Filehelper{}
-	// guid := ""
-	// if filemode.Currentchunk == 0 {
-	// 	guid = tools.GetGuid()
-	// }
-	filename := "3eac093fba68a6adc785a4ebd7362640" + "." + filemode.Filetype
+	if filemode.Currentchunk == 0 {
+		filename = tools.GetGuid() + "." + filemode.Filetype
+	} else {
+		filename = filemode.Filename
+	}
 	switch {
 	case filemode.Currentchunk == 0:
 		return filehelper.WriteFile(filename, filemode.Filedata)
