@@ -7,7 +7,7 @@ import(
 	"log"
 	"errors"
 	"time"
-//	"golangapi/models"
+	"golangapi/models"
 )
 
 const gridfscname = "fs"
@@ -38,20 +38,21 @@ func (m *MongoGridFSHelper) GetFileById (collectionname string, objectId string)
 }
 
 
-func (m *MongoGridFSHelper) UploadFile (data []byte, parameters map[string]interface{}) (objectId string, err error) {
+func (m *MongoGridFSHelper) UploadFile (filemode models.Filemodel) (objectId string, err error) {
 	session := Session()
 	db := session.DB(dbname)
 	newid := bson.NewObjectId()
-	file, err := db.GridFS(gridfscname).Create(newid.Hex() + "." + parameters["type"].(string))
+	filename := newid.Hex() + "." + filemode.Filetype
+	file, err := db.GridFS(gridfscname).Create(filename)
 	if err != nil {
 		log.Println(err)
 		return "", err
 	}
 	file.SetId(newid)
-	file.SetName(newid.Hex())
+	file.SetName(filename)
 	file.SetUploadDate(time.Now())
-	file.SetContentType(parameters["contenttype"].(string))
-	_, err = file.Write(data)
+	file.SetContentType(filemode.Contenttype)
+	_, err = file.Write(filemode.Filedata)
 	if err != nil {
 		log.Println(err)
 		return "", err

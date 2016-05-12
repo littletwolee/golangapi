@@ -6,7 +6,7 @@ import (
 	"github.com/astaxie/beego"
 	"encoding/json"
 	"strconv" 
-//	"log"
+	"log"
 )
 
 // Operations about object
@@ -98,7 +98,8 @@ func (u *UserinfoController) UploadUserPic() {
 	f.Close()
 	file := models.Filemodel{}
 	file.Filename = h.Filename
-	file.Contenttype = u.Input().Get("Content-Type")
+	file.Contenttype = h.Header.Get("Content-Type")
+	log.Println(file.Contenttype)
 	file.Filetype = u.Input().Get("filetype")
 	bytesize ,err := strconv.Atoi(u.Input().Get("bytesize"))
 	if err != nil {

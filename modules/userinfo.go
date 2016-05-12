@@ -65,7 +65,7 @@ func (u *Userinfo) UploadUserPic(filemode models.Filemodel) (string, error) {
 
 
 	var filename string
-	filehelper := &tools.Filehelper{}
+	mongogridfshelper := &tools.MongoGridFSHelper{}
 	redishelper := &tools.RedisHelper{}
 	if filemode.Currentchunk == 0 {
 		filename = tools.GetGuid() 
@@ -74,40 +74,20 @@ func (u *Userinfo) UploadUserPic(filemode models.Filemodel) (string, error) {
 	}
 	switch {
 	case filemode.Currentchunk == 0 && filemode.Currentchunk == filemode.Maxchunks - 1 :
-		return filehelper.WriteFile(filename, filemode.Filedata)
+		return mongogridfshelper.UploadFile(filemode)
 	case filemode.Currentchunk < filemode.Maxchunks:
 		if filemode.Currentchunk != 0 {
 			if filechunkdata ,err := redishelper.GetVByK(filename, "bytes"); err == nil {
 				filemode.Filedata = append(filechunkdata.([]byte), filemode.Filedata...)
-				// if filemode.Currentchunk == filemode.Maxchunks - 1 {
-				// 	return filehelper.WriteFile(filename + "." + filemode.Filetype, newdata)
-				// } else {
-				// 	if err := redishelper.SetKVBySETEX(filename, newdata, 60); err == nil {
-				// 		return filename, nil
-				// 	}
-				// }
 			}
 		}
 		if filemode.Currentchunk == filemode.Maxchunks - 1 {
-			return filehelper.WriteFile(filename + "." + filemode.Filetype, filemode.Filedata)
+			return mongogridfshelper.UploadFile(filemode)
 		} else {
 			if err := redishelper.SetKVBySETEX(filename, filemode.Filedata, 60); err == nil {
 				return filename, nil
 			}
 		}
-	// case filemode.Currentchunk != 0:
-	// 	if filechunkdata ,err := redishelper.GetVByK(filename, "bytes"); err != nil {
-	// 			return filename, nil
-	// 	} else {
-	// 		newdata := append(filechunkdata.([]byte), filemode.Filedata...)
-	// 		if filemode.Currentchunk == filemode.Maxchunks - 1 {
-	// 			return filehelper.WriteFile(filename + "." + filemode.Filetype, newdata)
-	// 		} else {
-	// 			if err := redishelper.SetKVBySETEX(filename, newdata, 60); err == nil {
-	// 				return filename, nil
-	// 			}
-	// 		}
-	// 	}
 	}
 	return "", (&tools.ResultHelp{}).NewErr("server err")
 }
