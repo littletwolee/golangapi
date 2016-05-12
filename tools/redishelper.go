@@ -36,7 +36,7 @@ func newPool() *redis.Pool {
 func (r *RedisHelper) SetKVBySETEX(key interface{}, value interface{}, time int) error {
 	rc := pool.Get()
 	defer rc.Close()
-	if _, err := redis.Bool(rc.Do("SETEX", key, time, value)); err != nil {
+	if _, err := redis.String(rc.Do("SETEX", key, time, value)); err != nil {
 		return err
 	}
 	return nil
@@ -45,10 +45,10 @@ func (r *RedisHelper) SetKVBySETEX(key interface{}, value interface{}, time int)
 func (r *RedisHelper) SetKV(key interface{}, value interface{}) error {
 	rc := pool.Get()
 	defer rc.Close()
-	if _, err := redis.Bool(rc.Do("SET", key, value)); err != nil {
+	if _, err := redis.String(rc.Do("SET", key, value)); err != nil {
 		return err
 	}
-	return nil
+	return nil 
 }
 
 func (r *RedisHelper) GetVByK(key interface{}, returntype string) (value interface{}, err error) {

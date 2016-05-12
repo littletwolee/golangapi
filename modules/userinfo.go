@@ -64,8 +64,7 @@ func (u *Userinfo) UploadUserPic(filemode models.Filemodel) (string, error) {
 	// return nil
 
 
-	
-	filename := ""
+	var filename string
 	filehelper := &tools.Filehelper{}
 	redishelper := &tools.RedisHelper{}
 	if filemode.Currentchunk == 0 {
@@ -74,22 +73,41 @@ func (u *Userinfo) UploadUserPic(filemode models.Filemodel) (string, error) {
 		filename = filemode.Filename
 	}
 	switch {
-	case filemode.Currentchunk == 0 && filemode.Currentchunk < filemode.Maxchunks - 1:
-		if err := redishelper.SetKVBySETEX(filename, filemode.Filedata, 300); err == nil {
-			return filename, nil
-		}
-		
-		//return filehelper.WriteFile(filename, filemode.Filedata)
-		
 	case filemode.Currentchunk == 0 && filemode.Currentchunk == filemode.Maxchunks - 1 :
 		return filehelper.WriteFile(filename, filemode.Filedata)
-	case filemode.Currentchunk != 0 && filemode.Currentchunk < filemode.Maxchunks - 1 :
-		if filechunkdata ,err := redishelper.GetVByK(filename, "bytes"); err == nil {
-				return filename, nil
-		} else {
-			newdata := append(filechunkdata.([]byte), filemode.Filedata...)
-			return filehelper.WriteFile(filename, newdata)
+	case filemode.Currentchunk < filemode.Maxchunks:
+		if filemode.Currentchunk != 0 {
+			if filechunkdata ,err := redishelper.GetVByK(filename, "bytes"); err == nil {
+				filemode.Filedata = append(filechunkdata.([]byte), filemode.Filedata...)
+				// if filemode.Currentchunk == filemode.Maxchunks - 1 {
+				// 	return filehelper.WriteFile(filename + "." + filemode.Filetype, newdata)
+				// } else {
+				// 	if err := redishelper.SetKVBySETEX(filename, newdata, 60); err == nil {
+				// 		return filename, nil
+				// 	}
+				// }
+			}
 		}
+		if filemode.Currentchunk == filemode.Maxchunks - 1 {
+			return filehelper.WriteFile(filename + "." + filemode.Filetype, filemode.Filedata)
+		} else {
+			if err := redishelper.SetKVBySETEX(filename, filemode.Filedata, 60); err == nil {
+				return filename, nil
+			}
+		}
+	// case filemode.Currentchunk != 0:
+	// 	if filechunkdata ,err := redishelper.GetVByK(filename, "bytes"); err != nil {
+	// 			return filename, nil
+	// 	} else {
+	// 		newdata := append(filechunkdata.([]byte), filemode.Filedata...)
+	// 		if filemode.Currentchunk == filemode.Maxchunks - 1 {
+	// 			return filehelper.WriteFile(filename + "." + filemode.Filetype, newdata)
+	// 		} else {
+	// 			if err := redishelper.SetKVBySETEX(filename, newdata, 60); err == nil {
+	// 				return filename, nil
+	// 			}
+	// 		}
+	// 	}
 	}
 	return "", (&tools.ResultHelp{}).NewErr("server err")
 }
