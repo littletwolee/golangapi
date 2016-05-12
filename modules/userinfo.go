@@ -37,57 +37,28 @@ func (u *Userinfo) UpdateUserinfoById(ObjectId string, userinfo map[string]inter
 	return (&tools.MongoHelper{}).UpdateById(userinfocname, ObjectId, userinfo)
 }
 
-func (u *Userinfo) UploadUserPic(filemode models.Filemodel) (string, error) {
-	// if 
-	// switch {
-	// case parameters["offset"] == 1 && thisnum == maxnum:
-	// 	objectId, err := (&tools.MongoGridFSHelper{}).UploadFile(file, parameters)
-	// case thisnum == 1 && thisnum < maxnum:
-	// 	(&tools.Filehelper{}).
-	// }
-	// if err != nil {
-	// 		log.Println(err)
-	// 		return err
-	// 	}
-	// 	userid := parameters["imname"].(string)
-	// 	userinfo := bson.M{"$set" : bson.M{"pic" : objectId}}
-	// 	err = (&tools.MongoHelper{}).UpdateById(userinfocname, userid, userinfo)
-	// 	if err != nil {
-	// 		log.Println(err)
-	// 		err = (&tools.MongoGridFSHelper{}).DeleteFileById(objectId)
-	// 		if err != nil {
-	// 			log.Println(err)
-	// 			return err
-	// 		}
-	// 		return err
-	// 	}
-	// return nil
-
-
-	var filename string
-	mongogridfshelper := &tools.MongoGridFSHelper{}
-	redishelper := &tools.RedisHelper{}
-	if filemode.Currentchunk == 0 {
-		filename = tools.GetGuid() 
+func (u *Userinfo) UploadUserPic(filemode models.Filemodel, userid string, userpic string) (string, error) {
+	if fileid, err := (&tools.Filehelper{}).UploadFileToMongo(filemode); err == nil{
+		if (filemode.Currentchunk == 0 &&
+			filemode.Currentchunk == filemode.Maxchunks - 1) ||
+			filemode.Currentchunk == filemode.Maxchunks - 1 {
+			userinfo := bson.M{"pic" : fileid}
+			err = (&tools.MongoHelper{}).UpdateById(userinfocname, userid, userinfo)
+			if err == nil {
+				fileid = userpic
+			}
+			if userpic != "" {
+				err = (&tools.MongoGridFSHelper{}).DeleteFileById(fileid)
+				if err != nil {
+					return "", err
+				}
+				return fileid, nil
+			}
+			return "", err
+		}
+		return fileid, nil
 	} else {
-		filename = filemode.Filename
+		return "", err
 	}
-	switch {
-	case filemode.Currentchunk == 0 && filemode.Currentchunk == filemode.Maxchunks - 1 :
-		return mongogridfshelper.UploadFile(filemode)
-	case filemode.Currentchunk < filemode.Maxchunks:
-		if filemode.Currentchunk != 0 {
-			if filechunkdata ,err := redishelper.GetVByK(filename, "bytes"); err == nil {
-				filemode.Filedata = append(filechunkdata.([]byte), filemode.Filedata...)
-			}
-		}
-		if filemode.Currentchunk == filemode.Maxchunks - 1 {
-			return mongogridfshelper.UploadFile(filemode)
-		} else {
-			if err := redishelper.SetKVBySETEX(filename, filemode.Filedata, 60); err == nil {
-				return filename, nil
-			}
-		}
-	}
-	return "", (&tools.ResultHelp{}).NewErr("server err")
+	
 }

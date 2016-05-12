@@ -2,11 +2,9 @@ package tools
 
 import (
 	"github.com/astaxie/beego"
-//	"bufio" 
-//	"fmt"
 	"io/ioutil"
-//	"io"
 	"os"
+	"golangapi/models"
 //	"log"
 )
 
@@ -53,4 +51,33 @@ func (f *Filehelper)ReadFile(filename string) ([]byte, error){
 		return nil, err
 	}
 	return file, nil
+}
+
+func (f *Filehelper)UploadFileToMongo(filemode models.Filemodel) (string, error) {
+	var filename string
+	mongogridfshelper := &MongoGridFSHelper{}
+	redishelper := &RedisHelper{}
+	if filemode.Filename == "" {
+		filename = GetGuid() 
+	} else {
+		filename = filemode.Filename
+	}
+	switch {
+	case filemode.Currentchunk == 0 && filemode.Currentchunk == filemode.Maxchunks - 1 :
+		return mongogridfshelper.UploadFile(filemode)
+	case filemode.Currentchunk < filemode.Maxchunks:
+		if filemode.Currentchunk != 0 {
+			if filechunkdata ,err := redishelper.GetVByK(filename, "bytes"); err == nil {
+				filemode.Filedata = append(filechunkdata.([]byte), filemode.Filedata...)
+			}
+		}
+		if filemode.Currentchunk == filemode.Maxchunks - 1 {
+			return mongogridfshelper.UploadFile(filemode)
+		} else {
+			if err := redishelper.SetKVBySETEX(filename, filemode.Filedata, 60); err == nil {
+				return filename, nil
+			}
+		}
+	}
+	return "", (&ResultHelp{}).NewErr("server err")
 }

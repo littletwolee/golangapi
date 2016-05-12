@@ -5,7 +5,6 @@ import "time"
 type Userinfo struct {
 //	ObjectId string
 	Name             string
-	Imcode           string
 	Qrcode           string
 	Address          string
 	Gender           string
