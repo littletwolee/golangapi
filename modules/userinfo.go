@@ -62,3 +62,7 @@ func (u *Userinfo) UploadUserPic(filemode models.Filemodel, userid string, userp
 	}
 	
 }
+
+func (u *Userinfo) DownloadUserPic(userpic string) ([]byte, error) {
+	return (&tools.MongoGridFSHelper{}).GetFileById(userinfocname, userpic)
+}

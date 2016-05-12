@@ -32,6 +32,7 @@ func init() {
 			beego.NSRouter("/delete/?:objectId", &controllers.UserinfoController{}, "delete:DeleteUserinfo"),
 			beego.NSRouter("/update/?:objectId", &controllers.UserinfoController{}, "post:UpdateUserinfoById"),
 			beego.NSRouter("/uploadpic", &controllers.UserinfoController{}, "post:UploadUserPic"),
+			beego.NSRouter("/downloadpic/?:userpic", &controllers.UserinfoController{}, "get:DownloadUserPic"),
 		),
 	)
 	beego.AddNamespace(ns)

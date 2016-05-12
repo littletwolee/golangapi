@@ -6,7 +6,7 @@ import (
 	"github.com/astaxie/beego"
 	"encoding/json"
 	"strconv" 
-//	"log"
+	"log"
 	"strings"
 )
 
@@ -130,3 +130,16 @@ func (u *UserinfoController) UploadUserPic() {
 	u.ServeJSON()
 }
 
+func (u *UserinfoController) DownloadUserPic() {
+	userpic := u.Ctx.Input.Param(":userpic")
+	file, err := (&modules.Userinfo{}).DownloadUserPic(userpic)
+	log.Println(len(file))
+	if err != nil {
+		u.Data["json"] = err.Error()
+	}
+	log.Println(len(file))
+	u.Ctx.Output.Body(file)
+	u.RenderBytes()
+	// u.Data["json"] = map[string]string{"status": userpic}
+	// u.ServeJSON()
+}
