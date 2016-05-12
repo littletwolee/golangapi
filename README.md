@@ -1,4 +1,4 @@
-# A Restful Api Server For MongoDB By Golang Language
+# A Restful Api Server By Golang Language
 
 ##Summary
 
@@ -9,6 +9,7 @@ And next, I want to modify some models of ejabberd. Like user info, relationship
 
 * [beego](http://beego.me/) -- A Restful framework
 * [mgo](http://labix.org/mgo) -- MongoDB drive
+* [redigo](https://github.com/garyburd/redigo) -- Redis drive
 
 ##Application & Package Version
 
@@ -17,10 +18,12 @@ And next, I want to modify some models of ejabberd. Like user info, relationship
 * beego 1.6.1
 * mongodb 3.0
 * mgo v2
+* redigo
 
 ##Framework Design
 
-Follow Beego. I'm just add modules for business logic layer. Package Models is only for DB models. And I'm writing package tools.Have some tools classes in it. Of course, You can use any one of them alone.In mongohelpes, there have show one, show all, inster, pull, push, update & delete. It only deals with the interface or map type. So you can deals object & json in package modules.So that it maintains the reuse function.
+Follow Beego. I'm just add modules for business logic layer. Package Models is only for DB models. And I'm writing package tools.Have some tools classes in it. Of course, You can use any one of them alone.I'm store user login infomation & file chunks by redis. And store other infomation in MongoDB.
+It only deals with the interface or map type. So you can deals object & json in package modules.So that it maintains the reuse function.
 
 * Beego design: request → routers → controllers → models
 * My design: request → controllers → modules  → models & tools
