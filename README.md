@@ -28,6 +28,23 @@ It only deals with the interface or map type. So you can deals object & json in 
 * Beego design: request → routers → controllers → models
 * My design: request → controllers → modules  → models & tools
 
+##Configuration instructions
+
+	appname : your app name
+	httpport : http server port
+	runmode : run modes like dev & pro etc
+	autorender : close the template rendering, in this is false
+	copyrequestbody : Read body information, in this is true
+	EnableDocs : enable Docs or not
+	mongohost = your mongodb host
+	mongoport = your mongodb port, default is 27017
+	mongodbname = your mongodb dbname
+	filecache : IF you need cache file on desk, you need write directory path in here
+	redisnetwork : redis net work type TCP/UDP
+	redishost = your redis host
+	redisport = your redis port, default is 6379
+	redispwd = your redis authentication password
+
 ##Usage
 
 	cd YOUR_CODE_PWD
@@ -37,9 +54,3 @@ It only deals with the interface or map type. So you can deals object & json in 
 	cd src & git clone https://github.com/littletwolee/mongoapi.git
 	cd conf & modify your configuration
 	cd ../ & bee run
-
-##Configuration instructions
-
-	mongohost = "mongodb host"
-	mongoport = "mongodb port"
-	mongodbname = "dbname"
