@@ -35,9 +35,11 @@ It only deals with the interface or map type. So you can deals object & json in 
 	go get github.com/astaxie/beego #need build it
 	go get gopkg.in/mgo.v2 #need build it
 	cd src & git clone https://github.com/littletwolee/mongoapi.git
-	cd conf & vim app.conf
+	cd conf & modify your configuration
+	cd ../ & bee run
+
+##Configuration instructions
+
 	mongohost = "mongodb host"
 	mongoport = "mongodb port"
 	mongodbname = "dbname"
-	cd ../ & bee run
-
