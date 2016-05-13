@@ -14,27 +14,28 @@ const gridfscname = "fs"
 
 type MongoGridFSHelper struct{}
 
-func (m *MongoGridFSHelper) GetFileById (collectionname string, objectId string) (result []byte, err error){
+func (m *MongoGridFSHelper) GetFileById (collectionname string, objectId string) (data []byte,err error){
 	session := Session()
 	db := session.DB(dbname)
-	collection := db.GridFS(collectionname)
-	data := bson.M{}
 	if ! bson.IsObjectIdHex(objectId) {
 		err = errors.New("It is not a objectId")
-		log.Println(err)
 		return nil, err
 	}
-	err = collection.Find(bson.M{"_id": bson.ObjectIdHex(objectId)}).One(&data)
+	file, err := db.GridFS(gridfscname).OpenId(bson.ObjectIdHex(objectId))
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
-	result, err = bson.Marshal(data)
+	data = make([]byte, file.Size())
+	_ ,err = file.Read(data)
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
-	return result, nil
+	log.Println(len(data))
+	err = file.Close()
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
 }
 
 
@@ -45,7 +46,6 @@ func (m *MongoGridFSHelper) UploadFile (filemode models.Filemodel) (objectId str
 	filename := newid.Hex() + "." + filemode.Filetype
 	file, err := db.GridFS(gridfscname).Create(filename)
 	if err != nil {
-		log.Println(err)
 		return "", err
 	}
 	file.SetId(newid)
@@ -54,12 +54,10 @@ func (m *MongoGridFSHelper) UploadFile (filemode models.Filemodel) (objectId str
 	file.SetContentType(filemode.Contenttype)
 	_, err = file.Write(filemode.Filedata)
 	if err != nil {
-		log.Println(err)
 		return "", err
 	}
 	err = file.Close()
 	if err != nil {
-		log.Println(err)
 		return "", err
 	}
 	return newid.Hex(), nil
@@ -71,7 +69,6 @@ func (m *MongoGridFSHelper) DeleteFileById (objectId string) error {
 	db := session.DB(dbname)
 	err := db.GridFS(gridfscname).RemoveId(bson.ObjectIdHex(objectId))
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 	return nil
