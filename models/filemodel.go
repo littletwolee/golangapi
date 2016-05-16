@@ -7,4 +7,5 @@ type Filemodel struct {
 	Filetype       string
 	Currentchunk   int
 	Maxchunks      int
+	Size           int64
 }

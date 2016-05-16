@@ -128,6 +128,7 @@ func (m *MongoHelper) Create (collectionname string, object interface{}) (object
 		return "", err
 	}
 	data["createdate"] = time.Now()
+	data["lastmodifydate"] = time.Now()
 	newid := bson.NewObjectId()
 	//log.Println(data["createdate"].(time.Time))
 	data["_id"] = newid

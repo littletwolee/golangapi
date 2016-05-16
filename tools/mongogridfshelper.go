@@ -4,7 +4,7 @@ import(
 //	"github.com/astaxie/beego"
 //	"gopkg.in/mgo.v2"
         "gopkg.in/mgo.v2/bson"
-	"log"
+//	"log"
 	"errors"
 	"time"
 	"golangapi/models"
@@ -14,7 +14,7 @@ const gridfscname = "fs"
 
 type MongoGridFSHelper struct{}
 
-func (m *MongoGridFSHelper) GetFileById (collectionname string, objectId string) (data []byte,err error){
+func (m *MongoGridFSHelper) GetFileById (collectionname string, objectId string) (rangemode interface{},err error){
 	session := Session()
 	db := session.DB(dbname)
 	if ! bson.IsObjectIdHex(objectId) {
@@ -25,17 +25,21 @@ func (m *MongoGridFSHelper) GetFileById (collectionname string, objectId string)
 	if err != nil {
 		return nil, err
 	}
-	data = make([]byte, file.Size())
+	data := make([]byte, file.Size())
 	_ ,err = file.Read(data)
 	if err != nil {
 		return nil, err
 	}
-	log.Println(len(data))
+	rangemode = &models.Rangemodel{
+		file.Name(),
+		data,
+		file.ContentType(),
+		0,file.Size()}
 	err = file.Close()
 	if err != nil {
 		return nil, err
 	}
-	return data, nil
+	return rangemode, nil
 }
 
 

@@ -5,8 +5,8 @@ import (
 	"golangapi/models"
 	"github.com/astaxie/beego"
 	"encoding/json"
-	"strconv" 
-//	"log"
+	"strconv"
+	"log"
 	"strings"
 )
 
@@ -31,7 +31,7 @@ func (u *UserinfoController) GetOneUserinfoById() {
 			u.Data["json"] = ob
 		}
 	}
-	u.ServeJSON()
+	u.ServeJSON(true)
 }
 
 // @Title CreateUserinfo
@@ -136,11 +136,17 @@ func (u *UserinfoController) UploadUserPic() {
 // @Failure 403 
 // @router / [get]
 func (u *UserinfoController) DownloadUserPic() {
-	userpic := u.Ctx.Input.Param(":userpic")
 	file, err := (&modules.Userinfo{}).DownloadUserPic(userpic)
 	if err != nil {
 		u.Data["json"] = err.Error()
 		u.ServeJSON()
-	} 
+	}
+	if isexistsrange := u.Ctx.Input.Header("range"); isexistsrange == "" {
+		
+	} else {
+		
+	}
 	u.Ctx.Output.Body(file)
+	log.Println(userpic)	
+	u.ServeJSON()
 }

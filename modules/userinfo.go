@@ -63,6 +63,14 @@ func (u *Userinfo) UploadUserPic(filemode models.Filemodel, userid string, userp
 	
 }
 
-func (u *Userinfo) DownloadUserPic(userpic string) ([]byte, error) {
-	return (&tools.MongoGridFSHelper{}).GetFileById(userinfocname, userpic)
+func (u *Userinfo) DownloadUserPic(userpic string) (models.Rangemodel, error) {
+	rangemode, err := (&tools.MongoGridFSHelper{}).GetFileById(userinfocname, userpic)
+	if err != nil {
+		return nil, err
+	}
+	rangemode = rangemode.(models.Rangemodel)
+	filename := userpic + "_" + rangemode.Start + "_" + rangemode.End
+	if err := redishelper.SetKVBySETEX(filename, rangemode.Filedata, 60); err == nil {
+		return filename, nil
+	}
 }
