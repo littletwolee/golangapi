@@ -3,6 +3,7 @@ package modules
 import(
 	"golangapi/models"
 	"golangapi/tools"
+//	"strconv"
 //	"log"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -63,14 +64,19 @@ func (u *Userinfo) UploadUserPic(filemode models.Filemodel, userid string, userp
 	
 }
 
-func (u *Userinfo) DownloadUserPic(userpic string) (models.Rangemodel, error) {
+func (u *Userinfo) DownloadUserPic(userpic string) (interface{}, error) {
 	rangemode, err := (&tools.MongoGridFSHelper{}).GetFileById(userinfocname, userpic)
 	if err != nil {
 		return nil, err
 	}
-	rangemode = rangemode.(models.Rangemodel)
-	filename := userpic + "_" + rangemode.Start + "_" + rangemode.End
-	if err := redishelper.SetKVBySETEX(filename, rangemode.Filedata, 60); err == nil {
-		return filename, nil
-	}
+	// filename := userpic + "_" +
+	// 	strconv.FormatInt(rangemode.(models.Rangemodel).Start, 10) + "_" +
+	// 	strconv.FormatInt(rangemode.(models.Rangemodel).End, 10)
+	// if filechunkdata ,err := redishelper.GetVByK(filename, "bytes"); err == nil {
+	// 			filemode.Filedata = append(filechunkdata.([]byte), filemode.Filedata...)
+	// 		}
+	// if err := (&tools.RedisHelper{}).SetKVBySETEX(filename, rangemode.(models.Rangemodel).Filedata, 60); err == nil {
+	// 	return nil, err
+	// }
+	return rangemode, nil
 }

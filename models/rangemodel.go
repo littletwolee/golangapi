@@ -6,4 +6,5 @@ type Rangemodel struct {
 	Contenttype    string
 	Start          int64
 	End            int64
+	Size           int64
 }

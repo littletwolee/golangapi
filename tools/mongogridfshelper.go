@@ -34,7 +34,8 @@ func (m *MongoGridFSHelper) GetFileById (collectionname string, objectId string)
 		file.Name(),
 		data,
 		file.ContentType(),
-		0,file.Size()}
+		0,file.Size(),
+		file.Size()}
 	err = file.Close()
 	if err != nil {
 		return nil, err
