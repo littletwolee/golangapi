@@ -142,6 +142,7 @@ func (u *UserinfoController) DownloadUserPic() {
 	if err != nil {
 		u.Data["json"] = err.Error()
 		u.ServeJSON()
+		return
 	}
 	rangemode := result.(*models.Rangemodel)
 	if rangestr := u.Ctx.Input.Header("range"); rangestr == "" {
@@ -150,10 +151,10 @@ func (u *UserinfoController) DownloadUserPic() {
 		u.Ctx.Output.Header("Accept-Ranges", "bytes")
 		u.Ctx.Output.Body(rangemode.Filedata)
 	} else {
-		log.Println(rangestr)
 		if start, end, err := tools.SplitRange(rangestr); err != nil {
 			u.Data["json"] = err.Error()
 			u.ServeJSON()
+			return 
 		} else {
 			u.Ctx.Output.Header("Content-Range", "bytes " +
 				strconv.FormatInt(start, 10) + "-" +
@@ -165,8 +166,8 @@ func (u *UserinfoController) DownloadUserPic() {
 				u.Ctx.Output.Header("Content-Length", strconv.FormatInt(end - start + 1, 10))}
 			u.Ctx.Output.Header("Content-Type", rangemode.Contenttype)
 			u.Ctx.Output.Body(rangemode.Filedata[start : end + 1])
+			log.Println(end - start + 1)
 			u.Ctx.Output.Header("Accept-Ranges", "bytes")
 			u.Ctx.Output.Header("Cache-Control", "no-cache")}
 	}
-	return
 }

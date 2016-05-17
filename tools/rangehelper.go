@@ -3,6 +3,7 @@ package tools
 import (
 	"regexp"
 	"strconv"
+//	"golangapi/models"
 )
 
 // @Title Generate md5
