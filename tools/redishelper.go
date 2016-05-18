@@ -7,7 +7,6 @@ import (
 
 var (
 	MAX_POOL_SIZE = 20
-	redisPoll chan redis.Conn
 	redisnetwork = beego.AppConfig.String("redisnetwork")
 	redishost = beego.AppConfig.String("redishost")
 	redisport = beego.AppConfig.String("redisport")
