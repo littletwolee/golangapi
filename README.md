@@ -10,6 +10,7 @@ And next, I want to modify some models of ejabberd. Like user info, relationship
 * [beego](http://beego.me/) -- A Restful framework
 * [mgo](http://labix.org/mgo) -- MongoDB drive
 * [redigo](https://github.com/garyburd/redigo) -- Redis drive
+* [neoism](https://github.com/jmcvetta/neoism) -- Neo4j drive
 
 ##Application & Package Version
 
@@ -19,6 +20,7 @@ And next, I want to modify some models of ejabberd. Like user info, relationship
 * mongodb 3.0
 * mgo v2
 * redigo
+* neoism v1.3.1
 
 ##Framework Design
 
