@@ -69,14 +69,13 @@ func (u *Userinfo) DownloadUserPic(userpic string) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	// filename := userpic + "_" +
-	// 	strconv.FormatInt(rangemode.(models.Rangemodel).Start, 10) + "_" +
-	// 	strconv.FormatInt(rangemode.(models.Rangemodel).End, 10)
-	// if filechunkdata ,err := redishelper.GetVByK(filename, "bytes"); err == nil {
-	// 			filemode.Filedata = append(filechunkdata.([]byte), filemode.Filedata...)
-	// 		}
-	// if err := (&tools.RedisHelper{}).SetKVBySETEX(filename, rangemode.(models.Rangemodel).Filedata, 60); err == nil {
-	// 	return nil, err
-	// }
 	return rangemode, nil
 }
+
+// func (u *Userinfo) DownloadBigFile(fileid string) (interface{}, error) {
+// 	rangemode, err := (&tools.MongoGridFSHelper{}).GetFileById(userinfocname, fileid)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return rangemode, nil
+// }

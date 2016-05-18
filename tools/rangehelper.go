@@ -6,11 +6,9 @@ import (
 //	"golangapi/models"
 )
 
-// @Title Generate md5
-// @Description Generate 32-bit string md5
-// @Success string
-// bytes=0-1
-//bytes=([0-9]*)-([0-9]*)
+// @Title Split Range
+// @Description split range to start and end
+// @Success int64 int 64 error
 func SplitRange(rangestr string) (int64, int64, error){
 	reg := regexp.MustCompile(`[0-9]+`)
 	result := reg.FindAllString(rangestr, -1)

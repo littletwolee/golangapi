@@ -3,11 +3,10 @@ package controllers
 import (
 	"golangapi/modules"
 	"golangapi/models"
-	"golangapi/tools"
 	"github.com/astaxie/beego"
 	"encoding/json"
 	"strconv"
-	"log"
+//	"log"
 	"strings"
 )
 
@@ -145,29 +144,54 @@ func (u *UserinfoController) DownloadUserPic() {
 		return
 	}
 	rangemode := result.(*models.Rangemodel)
-	if rangestr := u.Ctx.Input.Header("range"); rangestr == "" {
-		u.Ctx.Output.Header("Content-Type", rangemode.Contenttype)
-		u.Ctx.Output.Header("Content-Length", strconv.FormatInt(rangemode.End, 10))
-		u.Ctx.Output.Header("Accept-Ranges", "bytes")
-		u.Ctx.Output.Body(rangemode.Filedata)
-	} else {
-		if start, end, err := tools.SplitRange(rangestr); err != nil {
-			u.Data["json"] = err.Error()
-			u.ServeJSON()
-			return 
-		} else {
-			u.Ctx.Output.Header("Content-Range", "bytes " +
-				strconv.FormatInt(start, 10) + "-" +
-				strconv.FormatInt(end, 10)+ "/" +
-				strconv.FormatInt(rangemode.Size, 10))
-			if start == end {
-				u.Ctx.Output.Header("Content-Length", "0")
-			} else {
-				u.Ctx.Output.Header("Content-Length", strconv.FormatInt(end - start + 1, 10))}
-			u.Ctx.Output.Header("Content-Type", rangemode.Contenttype)
-			u.Ctx.Output.Body(rangemode.Filedata[start : end + 1])
-			log.Println(end - start + 1)
-			u.Ctx.Output.Header("Accept-Ranges", "bytes")
-			u.Ctx.Output.Header("Cache-Control", "no-cache")}
-	}
+	u.Ctx.Output.Header("Content-Type", rangemode.Contenttype)
+	u.Ctx.Output.Header("Content-Length", strconv.FormatInt(rangemode.Size, 10))
+	u.Ctx.Output.Body(rangemode.Filedata)
 }
+
+// @Title DownBigFile
+// @Description download big file
+// @Success 200 err nil
+// @Failure 403 
+// @router / [get]
+// func (u *UserinfoController) DownBigFile() {
+// 	fileid := u.Ctx.Input.Param(":fileid") 
+// 	result, err := (&modules.Userinfo{}).DownloadBigFile(fileid)
+// 	if err != nil {
+// 		u.Data["json"] = err.Error()
+// 		u.ServeJSON()
+// 		return
+// 	}
+// 	rangemode := result.(*models.Rangemodel)
+// 	if rangestr := u.Ctx.Input.Header("range"); rangestr == "" {
+// 		u.Ctx.Output.Header("Content-Type", rangemode.Contenttype)
+// 		u.Ctx.Output.Header("Content-Length", strconv.FormatInt(rangemode.End, 10))
+// 		u.Ctx.Output.Header("Accept-Ranges", "bytes")
+// 		u.Ctx.Output.Body(rangemode.Filedata)
+// 		u.Ctx.Output.SetStatus(200)
+// 	} else {
+// 		if start, end, err := tools.SplitRange(rangestr); err != nil {
+// 			u.Data["json"] = err.Error()
+// 			u.ServeJSON()
+// 			return 
+// 		} else {
+// 			if start >= rangemode.Size || end >= rangemode.Size {
+// 				u.Ctx.Output.Header("Content-Range", "bytes */" + strconv.FormatInt(rangemode.Size, 10))
+// 				u.Ctx.Output.SetStatus(416)
+// 				return
+// 			}
+// 			u.Ctx.Output.Header("Content-Range", "bytes " +
+// 				strconv.FormatInt(start, 10) + "-" +
+// 				strconv.FormatInt(end, 10)+ "/" +
+// 				strconv.FormatInt(rangemode.Size, 10))
+// 			if start == end {
+// 				u.Ctx.Output.Header("Content-Length", "0")
+// 			} else {
+// 				u.Ctx.Output.Header("Content-Length", strconv.FormatInt(end - start + 1, 10))}
+// 			u.Ctx.Output.Header("Content-Type", rangemode.Contenttype)
+// 			u.Ctx.Output.Body(rangemode.Filedata[start : end + 1])
+// 			u.Ctx.Output.Header("Accept-Ranges", "bytes")
+// 			u.Ctx.Output.SetStatus(206)
+// 			u.Ctx.Output.Header("Cache-Control", "no-cache")}
+// 	}
+// }
