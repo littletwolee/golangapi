@@ -27,7 +27,10 @@ func (u *Userinfo) GetOneUserinfoById (ObjectId string) (userinfo models.Userinf
 // }
 
 func (u *Userinfo) CreateUserinfo (userinfo models.Userinfo) (objectId string ,err error) {
-	return (&tools.MongoHelper{}).Create(userinfocname, userinfo)
+	objectId, err = (&tools.MongoHelper{}).Create(userinfocname, userinfo)
+	if err != nil {
+		return "", nil
+	}
 }
 
 func (u *Userinfo) DeleteUserinfo (objectId string) error {
@@ -79,3 +82,11 @@ func (u *Userinfo) DownloadUserPic(userpic string) (interface{}, error) {
 // 	}
 // 	return rangemode, nil
 // }
+
+func(u *Userinfo) CreateRelationship(userid int, friendid int) error {
+	err := (&tools.Neo4jHelper{}).CreateRelationship(userid, friendid, "friend")
+	if err != nil {
+		return err
+	}
+	return nil
+}

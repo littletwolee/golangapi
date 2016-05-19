@@ -41,9 +41,18 @@ func (u *User) GetAllUsers () (users []models.User,err error){
 }
 
 func (u *User) CreateUser (user models.User) (objectId string ,err error) {
-	return (&tools.MongoHelper{}).Create(usercname, user)
+	objectId, err = (&tools.MongoHelper{}).Create(usercname, user)
+	if err != nil {
+		return "", err
+	}
+	return objectId, err
 }
 
 func (u *User) DeleteUser (objectId string) error {
 	return (&tools.MongoHelper{}).DeleteDoc(usercname, objectId)
+}
+
+func (u *User) CreateUserNode(objectId string, name string) (int, error) {
+	user := map[string]interface{}{"objectId" : objectId, "name" : name}
+	return (&tools.Neo4jHelper{}).CreateNode(user, "user")
 }

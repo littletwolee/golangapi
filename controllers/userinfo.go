@@ -195,3 +195,30 @@ func (u *UserinfoController) DownloadUserPic() {
 // 			u.Ctx.Output.Header("Cache-Control", "no-cache")}
 // 	}
 // }
+
+// @Title CreateRelationship
+// @Description add friend
+// @Success 200 err nil
+// @Failure 403 
+// @router / [post]
+func(u *UserinfoController) CreateRelationship() {
+	userid, err := strconv.Atoi(u.GetString("userid"))
+	if err != nil {
+		u.Data["json"] = err.Error()
+		u.ServeJSON()
+		return
+	}
+	friendid, err := strconv.Atoi(u.GetString("friendid"))
+	if err != nil {
+		u.Data["json"] = err.Error()
+		u.ServeJSON()
+		return
+	}
+	err = (&modules.Userinfo{}).CreateRelationship(userid, friendid)
+	if err != nil {
+		u.Data["json"] = err.Error()
+	} else {
+		u.Data["json"] = map[string]string{"status": strconv.FormatBool(true)}
+	}
+	u.ServeJSON()
+}
