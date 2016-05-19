@@ -140,6 +140,34 @@ func (m *MongoHelper) Create (collectionname string, object interface{}) (object
 	return newid.Hex(), nil
 }
 
+func (m *MongoHelper) BulkCreate (collectionname string, objects []interface{}) (objectId string ,err error) {
+	session := Session()
+	db := session.DB(dbname)
+	collection := db.C(collectionname)
+	databyte, err := bson.Marshal(objects)
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+	data := bson.M{}
+	err = bson.Unmarshal(databyte, data)
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+	data["createdate"] = time.Now()
+	data["lastmodifydate"] = time.Now()
+	newid := bson.NewObjectId()
+	//log.Println(data["createdate"].(time.Time))
+	data["_id"] = newid
+	err = collection.Insert(data)
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+	return newid.Hex(), nil
+}
+
 func (m *MongoHelper) Update (collectionname string, filters map[string]interface{}) error {
 	session := Session()
 	db := session.DB(dbname)
