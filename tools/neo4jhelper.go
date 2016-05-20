@@ -75,10 +75,23 @@ func (r *Neo4jHelper) UpdateNode(nodeid int, properties map[string]interface{}) 
 	return nil
 }
 
-func (r *Neo4jHelper) CreateRelationship(startid int, endid int, relationship string) error {
+func (r *Neo4jHelper) CreateRelationship(startid int, endid int, relationship string) (int, error) {
 	db := newNeo4jDB()
 	nstart, _ := db.Node(startid)
-	_, err := nstart.Relate(relationship, endid, nil)
+	rid, err := nstart.Relate(relationship, endid, nil)
+	if err != nil {
+		return -1, err
+	}
+	return rid.Id(), nil
+}
+
+func (r *Neo4jHelper) DeleteRelationship(relationshipid int) error {
+	db := newNeo4jDB()
+	relationship, err := db.Relationship(relationshipid)
+	if err != nil {
+		return err
+	}
+	err = relationship.Delete()
 	if err != nil {
 		return err
 	}

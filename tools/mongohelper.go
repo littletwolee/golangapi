@@ -48,6 +48,7 @@ func (m *MongoHelper) GetOneById (collectionname string, objectId string) (resul
 
 func (m *MongoHelper) GetOneByFilter (collectionname string, filters map[string]string) (result []byte, err error){
 	session := Session()
+	defer session.Close()
 	db := session.DB(dbname)
 	collection := db.C(collectionname)
 	filter, err := bson.Marshal(filters)
@@ -76,6 +77,7 @@ func (m *MongoHelper) GetOneByFilter (collectionname string, filters map[string]
 
 func (m *MongoHelper) GetFieldByFilter (collectionname string, filters map[string]interface{}) (result []byte, err error){
 	session := Session()
+	defer session.Close()
 	db := session.DB(dbname)
 	collection := db.C(collectionname)
 	data := bson.M{}
@@ -93,6 +95,7 @@ func (m *MongoHelper) GetFieldByFilter (collectionname string, filters map[strin
 }
 func (m *MongoHelper) GetAll (collectionname string) (result [][]byte, err error){
 	session := Session()
+	defer session.Close()
 	db := session.DB(dbname)
 	collection := db.C(collectionname)
 	data := []bson.M{}
@@ -114,37 +117,10 @@ func (m *MongoHelper) GetAll (collectionname string) (result [][]byte, err error
 
 func (m *MongoHelper) Create (collectionname string, object interface{}) (objectId string ,err error) {
 	session := Session()
+	defer session.Close()
 	db := session.DB(dbname)
 	collection := db.C(collectionname)
 	databyte, err := bson.Marshal(object)
-	if err != nil {
-		log.Println(err)
-		return "", err
-	}
-	data := bson.M{}
-	err = bson.Unmarshal(databyte, data)
-	if err != nil {
-		log.Println(err)
-		return "", err
-	}
-	data["createdate"] = time.Now()
-	data["lastmodifydate"] = time.Now()
-	newid := bson.NewObjectId()
-	//log.Println(data["createdate"].(time.Time))
-	data["_id"] = newid
-	err = collection.Insert(data)
-	if err != nil {
-		log.Println(err)
-		return "", err
-	}
-	return newid.Hex(), nil
-}
-
-func (m *MongoHelper) BulkCreate (collectionname string, objects []interface{}) (objectId string ,err error) {
-	session := Session()
-	db := session.DB(dbname)
-	collection := db.C(collectionname)
-	databyte, err := bson.Marshal(objects)
 	if err != nil {
 		log.Println(err)
 		return "", err
@@ -223,6 +199,7 @@ func (m *MongoHelper) DeleteDoc (collectionname string, objectId string) error {
 
 func (m *MongoHelper) PushItem (collectionname string, objectId string, fildName string, object interface{}) error {
 	session := Session()
+	defer session.Close()
 	db := session.DB(dbname)
 	collection := db.C(collectionname)
 	if ! bson.IsObjectIdHex(objectId) {
@@ -243,6 +220,7 @@ func (m *MongoHelper) PushItem (collectionname string, objectId string, fildName
 
 func (m *MongoHelper) PullItem (collectionname string, objectId string, fildName string, object interface{}) error {
 	session := Session()
+	defer session.Close()
 	db := session.DB(dbname)
 	collection := db.C(collectionname)
 	if ! bson.IsObjectIdHex(objectId) {

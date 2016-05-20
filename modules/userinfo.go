@@ -31,14 +31,15 @@ func (u *Userinfo) CreateUserinfo (userinfo models.Userinfo) (objectId string ,e
 	if err != nil {
 		return "", nil
 	}
+	return objectId, nil
 }
 
 func (u *Userinfo) DeleteUserinfo (objectId string) error {
 	return (&tools.MongoHelper{}).DeleteDoc(userinfocname, objectId)
 }
 
-func (u *Userinfo) UpdateUserinfoById(ObjectId string, userinfo map[string]interface{}) error {
-	return (&tools.MongoHelper{}).UpdateById(userinfocname, ObjectId, userinfo)
+func (u *Userinfo) UpdateUserinfoById(objectId string, userinfo map[string]interface{}) error {
+	return (&tools.MongoHelper{}).UpdateById(userinfocname, objectId, userinfo)
 }
 
 func (u *Userinfo) UploadUserPic(filemode models.Filemodel, userid string, userpic string) (string, error) {
@@ -84,8 +85,13 @@ func (u *Userinfo) DownloadUserPic(userpic string) (interface{}, error) {
 // }
 
 func(u *Userinfo) CreateRelationship(userid int, friendid int) error {
-	err := (&tools.Neo4jHelper{}).CreateRelationship(userid, friendid, "friend")
+	rid, err := (&tools.Neo4jHelper{}).CreateRelationship(userid, friendid, "friend")
 	if err != nil {
+		return err
+	}
+	_, err = (&tools.Neo4jHelper{}).CreateRelationship(friendid, userid, "friend")
+	if err != nil {
+		(&tools.Neo4jHelper{}).DeleteRelationship(rid)
 		return err
 	}
 	return nil
