@@ -1,11 +1,16 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type User struct {
-//	ObjectId string
+	Id           string
 	Name         string
 	Pwd          string
 	CreateDate   time.Time
 }
 
+// func (u *User)setObjectId(objectId ){
+	
+// }

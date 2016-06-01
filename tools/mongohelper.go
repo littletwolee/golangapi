@@ -38,6 +38,7 @@ func (m *MongoHelper) GetOneById (collectionname string, objectId string) (resul
 		log.Println(err)
 		return nil, err
 	}
+	
 	result, err = bson.Marshal(data)
 	if err != nil {
 		log.Println(err)

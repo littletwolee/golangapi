@@ -31,6 +31,7 @@ func (u *UserinfoController) GetOneUserinfoById() {
 			u.Data["json"] = ob
 		}
 	}
+	
 	u.ServeJSON(true)
 }
 
