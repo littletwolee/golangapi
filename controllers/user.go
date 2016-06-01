@@ -25,7 +25,7 @@ func (u *UserController) GetOneUserById() {
 	if objectId != "" {
 		ob, err := (&modules.User{}).GetOneUserById(objectId)
 		if err != nil {
-			u.Data["json"] = err.Error()
+			u.Data["json"] = map[string]string{"Error": err.Error()}
 		} else {
 			u.Data["json"] = ob
 		}
@@ -45,7 +45,7 @@ func (u *UserController) GetOneUserByName() {
 		filters := map[string]string { "name" : name }
 		ob, err := (&modules.User{}).GetOneUserByFilter(filters)
 		if err != nil {
-			u.Data["json"] = err.Error()
+			u.Data["json"] =map[string]string{"Error": err.Error()}
 		} else {
 			u.Data["json"] = ob
 		}
@@ -78,7 +78,7 @@ func (u *UserController) CreateUser() {
 	json.Unmarshal(u.Ctx.Input.RequestBody, &user)
 	objectid, err :=  (&modules.User{}).CreateUser(user)
 	if err != nil {
-		u.Data["json"] = err.Error()
+		u.Data["json"] = map[string]string{"Error": err.Error()}
 	} else {
 		u.Data["json"] = map[string]string{"ObjectId": objectid}
 	}
@@ -94,7 +94,7 @@ func (u *UserController) DeleteUser() {
 	objectId := u.Ctx.Input.Param(":objectId")
 	err := (&modules.User{}).DeleteUser(objectId)
 	if err != nil {
-		u.Data["json"] = err.Error()
+		u.Data["json"] = map[string]string{"Error": err.Error()}
 	} else {
 		u.Data["json"] = map[string]string{"status": strconv.FormatBool(true)}
 	}

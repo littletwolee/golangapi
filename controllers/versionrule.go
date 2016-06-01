@@ -28,7 +28,7 @@ func (v *VersionRuleController) GetOneVersionRuleByVersion() {
 		filters["field"] = map[string]int{ "rule" : 1 , "_id" : 0 }
 		ob, err := (&modules.VersionRule{}).GetRuleByFilter(filters)
 		if err != nil {
-			v.Data["json"] = err.Error()
+			v.Data["json"] = map[string]string{"Error": err.Error()}
 		} else {
 			v.Data["json"] = ob
 		}

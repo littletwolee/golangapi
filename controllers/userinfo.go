@@ -26,7 +26,7 @@ func (u *UserinfoController) GetOneUserinfoById() {
 	if objectId != "" {
 		ob, err := (&modules.Userinfo{}).GetOneUserinfoById(objectId)
 		if err != nil {
-			u.Data["json"] = err.Error()
+			u.Data["json"] = map[string]string{"Error": err.Error()}
 		} else {
 			u.Data["json"] = ob
 		}
@@ -45,7 +45,7 @@ func (u *UserinfoController) CreateUserinfo() {
 	json.Unmarshal(u.Ctx.Input.RequestBody, &userinfo)
 	objectid, err :=  (&modules.Userinfo{}).CreateUserinfo(userinfo)
 	if err != nil {
-		u.Data["json"] = err.Error()
+		u.Data["json"] = map[string]string{"Error": err.Error()}
 	} else {
 		u.Data["json"] = map[string]string{"ObjectId": objectid}
 	}
@@ -61,7 +61,7 @@ func (u *UserinfoController) DeleteUserinfo() {
 	objectId := u.Ctx.Input.Param(":objectId")
 	err := (&modules.Userinfo{}).DeleteUserinfo(objectId)
 	if err != nil {
-		u.Data["json"] = err.Error()
+		u.Data["json"] = map[string]string{"Error": err.Error()}
 	} else {
 		u.Data["json"] = map[string]string{"status": strconv.FormatBool(true)}
 	}
@@ -79,7 +79,7 @@ func (u *UserinfoController) UpdateUserinfoById() {
 	json.Unmarshal(u.Ctx.Input.RequestBody, &userinfo)
 	err := (&modules.Userinfo{}).UpdateUserinfoById(objectId, userinfo)
 	if err != nil {
-		u.Data["json"] = err.Error()
+		u.Data["json"] = map[string]string{"Error": err.Error()}
 	} else {
 		u.Data["json"] = map[string]string{"status": strconv.FormatBool(true)}
 	}
@@ -140,7 +140,7 @@ func (u *UserinfoController) DownloadUserPic() {
 	userpic := u.Ctx.Input.Param(":userpic")
 	result, err := (&modules.Userinfo{}).DownloadUserPic(userpic)
 	if err != nil {
-		u.Data["json"] = err.Error()
+		u.Data["json"] = map[string]string{"Error": err.Error()}
 		u.ServeJSON()
 		return
 	}
@@ -224,7 +224,7 @@ func(u *UserinfoController) CreateRelationship() {
 	// }
 	err := (&modules.Userinfo{}).CreateRelationship(relationship.Userid, relationship.Friendid)
 	if err != nil {
-		u.Data["json"] = err.Error()
+		u.Data["json"] = map[string]string{"Error": err.Error()}
 	} else {
 		u.Data["json"] = map[string]string{"status": strconv.FormatBool(true)}
 	}
