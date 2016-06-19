@@ -64,3 +64,5 @@ func (u *User) CreateUserNode(objectId string, name string) (int, error) {
 	user := map[string]interface{}{"objectId" : objectId, "name" : name}
 	return (&tools.Neo4jHelper{}).CreateNode(user, usercname)
 }
+
+
