@@ -65,4 +65,6 @@ func (u *User) CreateUserNode(objectId string, name string) (int, error) {
 	return (&tools.Neo4jHelper{}).CreateNode(user, usercname)
 }
 
+func (u *User) AddFriend(fromObjectId string, toObjectId string) (boolean) {
 
+}
