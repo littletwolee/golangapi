@@ -5,6 +5,7 @@ import(
 	"golangapi/tools"
 	"log"
 	"gopkg.in/mgo.v2/bson"
+	"github.com/jmcvetta/neoism"
 )
 
 type User struct{}
@@ -65,6 +66,16 @@ func (u *User) CreateUserNode(objectId string, name string) (int, error) {
 	return (&tools.Neo4jHelper{}).CreateNode(user, usercname)
 }
 
-func (u *User) AddFriend(fromObjectId string, toObjectId string) (boolean) {
-
+func (u *User) AddFriend(relationship models.Relationship) bool {
+	cypherquery := neoism.CypherQuery{
+		Statement: `MATCH (f:user), (t:user) 
+                            WHERE f.objectId = {fromObjectId} AND t.objectId = {toObjectId}
+                            CREATE (f)-[:friend]->(t)`,
+		Parameters: neoism.Props{"fromObjectId": relationship.FromObjectId,"toObjectId": relationship.ToObjectId},
+	}
+	err := (&tools.Neo4jHelper{}).CommitNodeByQuery(cypherquery)
+	if err != nil {
+		return false
+	}
+	return true
 }

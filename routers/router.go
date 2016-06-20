@@ -20,6 +20,7 @@ func init() {
 			beego.NSRouter("/list", &controllers.UserController{}, "get:GetAllUsers"),
 			beego.NSRouter("/create", &controllers.UserController{}, "post:CreateUser"),
 			beego.NSRouter("/delete/?:objectId", &controllers.UserController{}, "delete:DeleteUser"),
+			beego.NSRouter("/addfriend", &controllers.UserController{}, "post:CreateRelationship"),
 		),
 		
 		beego.NSNamespace("/versionrule",
@@ -33,7 +34,6 @@ func init() {
 			beego.NSRouter("/update/?:objectId", &controllers.UserinfoController{}, "post:UpdateUserinfoById"),
 			beego.NSRouter("/uploadpic", &controllers.UserinfoController{}, "post:UploadUserPic"),
 			beego.NSRouter("/downloadpic/?:userpic", &controllers.UserinfoController{}, "get:DownloadUserPic"),
-			beego.NSRouter("/addfriend", &controllers.UserinfoController{}, "post:CreateRelationship"),
 		),
 	)
 	beego.AddNamespace(ns)

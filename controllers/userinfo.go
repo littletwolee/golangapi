@@ -197,36 +197,4 @@ func (u *UserinfoController) DownloadUserPic() {
 // 	}
 // }
 
-// @Title CreateRelationship
-// @Description add friend
-// @Success 200 err nil
-// @Failure 403 
-// @router / [post]
-func(u *UserinfoController) CreateRelationship() {
-	relationship := models.Relationship{ -1, -1}
-	json.Unmarshal(u.Ctx.Input.RequestBody, &relationship)
-	if relationship.Userid == -1 || relationship.Friendid == -1 {
-		u.Data["json"] = map[string]string{"status1": strconv.FormatBool(false)}
-		u.ServeJSON()
-		return
-	}
-	// userid, err := strconv.Atoi(relationship.Userid)
-	// if err != nil {
-	// 	u.Data["json"] = err.Error()
-	// 	u.ServeJSON()
-	// 	return
-	// }
-	// friendid, err := strconv.Atoi(relationship.Friendid)
-	// if err != nil {
-	// 	u.Data["json"] = err.Error()
-	// 	u.ServeJSON()
-	// 	return
-	// }
-	err := (&modules.Userinfo{}).CreateRelationship(relationship.Userid, relationship.Friendid)
-	if err != nil {
-		u.Data["json"] = map[string]string{"Error": err.Error()}
-	} else {
-		u.Data["json"] = map[string]string{"status": strconv.FormatBool(true)}
-	}
-	u.ServeJSON()
-}
+

@@ -1,6 +1,6 @@
 package models
 
 type Relationship struct {
-	Userid           int
-	Friendid         int
+	FromObjectId           string
+	ToObjectId             string
 }

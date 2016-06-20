@@ -27,14 +27,14 @@ func newNeo4jDB() neoism.Database {
 	return *db
 }
 
-func (r *Neo4jHelper) CommitNodeByQuery(objects []interface{}, query neoism.CypherQuery) ([]interface{}, error) {
+func (r *Neo4jHelper) CommitNodeByQuery(query neoism.CypherQuery) (error) {
 	db := newNeo4jDB()
 	err := db.Cypher(&query)
         if err != nil{
                 log.Println(err.Error())
-                return nil, err
+                return err
         }
-        return objects, nil
+        return nil
 }
 
 func (r *Neo4jHelper) GetNode(nodeid int) (*neoism.Node, error) {

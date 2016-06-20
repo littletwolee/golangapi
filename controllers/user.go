@@ -100,3 +100,16 @@ func (u *UserController) DeleteUser() {
 	}
 	u.ServeJSON()
 }
+
+// @Title CreateRelationship
+// @Description add friend
+// @Success 200 err nil
+// @Failure 403 
+// @router / [post]
+func (u *UserController) CreateRelationship() {
+	var relationship models.Relationship
+	json.Unmarshal(u.Ctx.Input.RequestBody, &relationship)
+	(&modules.User{}).AddFriend(relationship)
+	u.ServeJSON()
+}
+
