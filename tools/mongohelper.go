@@ -12,16 +12,16 @@ import(
 
 type MongoHelper struct{}
 
-// func Session() *mgo.Session {
-//     if session == nil {
-//         var err error
-//         session, err = mgo.Dial(url)
-//         if err != nil {
-//             panic(err) 
-//         }
-//     }
-//     return session.Clone()
-// }
+func Session() *mgo.Session {
+    if session == nil {
+        var err error
+        session, err = mgo.Dial(url)
+        if err != nil {
+            panic(err) 
+        }
+    }
+    return session.Clone()
+}
 
 func (m *MongoHelper) GetOneById (collectionname string, objectId string) (result []byte, err error){
 	session := Session()
@@ -72,6 +72,28 @@ func (m *MongoHelper) GetOneByFilter (collectionname string, filters map[string]
 	if err != nil {
 		log.Println(err)
 		return nil, err
+	}
+	return result, nil
+}
+
+func (m *MongoHelper) GetSomeByFilter (collectionname string, filters bson.M) (result [][]byte, err error){
+	session := Session()
+	defer session.Close()
+	db := session.DB(dbname)
+	collection := db.C(collectionname)
+	data := []bson.M{}
+	err = collection.Find(filters).All(&data)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	for _, item := range data {
+		itembyte, err := bson.Marshal(item)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		result = append(result, itembyte)
 	}
 	return result, nil
 }

@@ -5,12 +5,13 @@ import(
 	"golangapi/tools"
 	"log"
 	"gopkg.in/mgo.v2/bson"
-	"github.com/jmcvetta/neoism"
+//	"github.com/jmcvetta/neoism"
 )
 
 type User struct{}
 
 const usercname = "user"
+const offlinemsgcname = "offlinemsg"
 
 func (u *User) GetOneUserById (ObjectId string) (user models.User, err error){
 	result := models.User{}
@@ -67,15 +68,40 @@ func (u *User) CreateUserNode(objectId string, name string) (int, error) {
 }
 
 func (u *User) AddFriend(relationship models.Relationship) bool {
-	cypherquery := neoism.CypherQuery{
-		Statement: `MATCH (f:user), (t:user) 
-                            WHERE f.objectId = {fromObjectId} AND t.objectId = {toObjectId}
-                            CREATE (f)-[:friend]->(t)`,
-		Parameters: neoism.Props{"fromObjectId": relationship.FromObjectId,"toObjectId": relationship.ToObjectId},
-	}
-	err := (&tools.Neo4jHelper{}).CommitNodeByQuery(cypherquery)
+	// cypherquery := neoism.CypherQuery{
+	// 	Statement: `MATCH (f:user), (t:user) 
+        //                     WHERE f.objectId = {fromObjectId} AND t.objectId = {toObjectId}
+        //                     CREATE (f)-[:friend]->(t)`,
+	// 	Parameters: neoism.Props{"fromObjectId": relationship.FromObjectId,"toObjectId": relationship.ToObjectId},
+	// }
+	
+	//objectids := []
+	filters :=  bson.M{"_id":bson.M{"$in": []bson.ObjectId{
+		bson.ObjectIdHex(relationship.FromObjectId) ,
+		bson.ObjectIdHex(relationship.ToObjectId)}}}
+	data, err := (&tools.MongoHelper{}).GetSomeByFilter(usercname, filters)
 	if err != nil {
 		return false
 	}
+	users := make(map[string]interface{})
+	for _, item := range data {
+		resultitem := models.User{}
+		err = bson.Unmarshal(item, &resultitem)
+		if err != nil {
+			log.Panicln(err)
+			return false
+		}
+		log.Println(resultitem.Id.(bson.ObjectId).String())
+		users[resultitem.Id.(bson.ObjectId).String()] = resultitem
+	}
+	log.Println(users)
+	_ ,err = (&tools.Neo4jHelper{}).CreateRelationship(
+		users[relationship.FromObjectId].(models.User).NodeId,
+		users[relationship.ToObjectId].(models.User).NodeId, "friend")
+	if err != nil {
+		return false
+	}
+	//offlinemsg := models.OfflineMsg{}
+	//objectId, err = (&tools.MongoHelper{}).Create(offlinemsgcname, user)
 	return true
 }

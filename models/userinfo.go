@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Userinfo struct {
-//	ObjectId string
+	Id               interface{}  `json:"id" bson:"_id"`
 	Name             string
 	Qrcode           string
 	Address          string
